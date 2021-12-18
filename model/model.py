@@ -32,5 +32,8 @@ class Floor:
     level_no: int
     rooms: List[Room]
 
-    def getRoom(self, rid: str):
+    def get_room(self, rid: str):
         return next((room for room in self.rooms if room.id == rid), None)
+
+    def get_max_room_surface(self):
+        return max(map(lambda r: r.surface, self.rooms))

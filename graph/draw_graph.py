@@ -7,7 +7,7 @@ def draw_floor(floor: Floor, filename: str):
     graph = LevelGraph()
 
     for room in floor.rooms:
-        graph.add_room(room)
+        graph.add_room(room, floor.get_max_room_surface())
     for room in floor.rooms:
         for connection in room.connected_to:
             graph.add_pass(room.id, connection)
