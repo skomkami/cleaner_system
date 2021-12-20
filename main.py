@@ -1,26 +1,28 @@
 import pygame
 from drawer.draw_floor import draw_floor
+from drawer.legend_drawer import LegendDrawer
 from model.test_data import floor0
 from drawer.room_drawer import RoomDrawer
 from drawer.rectangle import Rectangle
 
-# filename = "floor.png"
 
 rect_size = 25
 pygame.init()
-screen = pygame.display.set_mode((1500, 600))
+screen = pygame.display.set_mode((1500, 800))
 running = True
 color_red = (255, 0, 0)
 color_green = (0, 255, 0)
 rooms = floor0.get_all_rooms()
 room_drawer = RoomDrawer(
     screen,
-    Rectangle(0, 0, screen.get_width(), screen.get_height()),
+    Rectangle(0, 0, 1500, 600),
     border_width=2,
     blocks_x=floor0.get_blocks_x(),
     blocks_y=floor0.get_blocks_y()
 )
 draw_floor(floor0, room_drawer)
+legend_drawer = LegendDrawer(screen, Rectangle(0, 600, 1500, 200))
+legend_drawer.draw()
 font = pygame.font.SysFont('Arial', 12)
 BLACK = (0, 0, 0)
 step = 0

@@ -1,22 +1,8 @@
 import pygame
 from drawer.rectangle import Rectangle
-from model.model import Room, RoomType
+from drawer.drawer import Drawer
+from model.model import Room
 from drawer.color import *
-
-
-def get_color_for_room(r: Room):
-    c = blue
-    if r.room_type == RoomType.Administration:
-        c = celadon
-    if r.room_type == RoomType.LaboratoryRoom:
-        c = light_orange
-    if r.room_type == RoomType.Entrance:
-        c = green
-    if r.room_type == RoomType.LectureHall:
-        c = orange
-    if r.room_type == RoomType.Hall:
-        c = yellow
-    return pygame.Color(c)
 
 
 def overlapping_center(s1: int, e1: int, s2: int, e2: int):
@@ -26,25 +12,17 @@ def overlapping_center(s1: int, e1: int, s2: int, e2: int):
     return (max_s + min_e) / 2
 
 
-class RoomDrawer:
+class RoomDrawer(Drawer):
     def __init__(self, pygame_screen: pygame.Surface, drawing_area: Rectangle, border_width: int, blocks_x: int,
                  blocks_y: int):
-        self.pygame_screen = pygame_screen
-        self.area = drawing_area
+        super().__init__(pygame_screen, drawing_area)
         self.border = border_width
-        self.block_w = pygame_screen.get_width() / blocks_x
-        self.block_h = pygame_screen.get_height() / blocks_y
+        self.block_w = self.area.width / blocks_x
+        self.block_h = self.area.height / blocks_y
         self.font = pygame.freetype.SysFont("Comic Sans MS", 24)
 
-    def draw_rect(self, x: int, y: int, width: int, height: int, color: pygame.Color = pygame.Color(0, 0, 0)):
-        rect = pygame.Rect(x + self.area.start_x, self.area.start_y + y, width, height)
-        pygame.draw.rect(self.pygame_screen, color, rect)
-
-    def draw_text(self, x: int, y: int, text: str, color: pygame.Color = pygame.Color(0, 0, 0)):
-        self.font.render_to(self.pygame_screen, (x, y), text, color)
-
     def draw_room(self, r: Room):
-        room_color = get_color_for_room(r)
+        room_color = pygame.Color(get_color_for_room(r.room_type))
         x_start = int(self.block_w * r.pos_x)
         y_start = int(self.block_h * r.pos_y)
         width = int(self.block_w * r.width)
@@ -56,7 +34,7 @@ class RoomDrawer:
         self.draw_rect(x=x_start, y=y_start + height - self.border, width=width, height=self.border)  # bottom border
         self.draw_rect(x=x_start, y=y_start + self.border, width=self.border,
                        height=y_start + height - self.border)  # left border
-        self.draw_text(x=x_start + 10, y=y_start + 10, text=r.id)
+        self.draw_text(self.font, x=x_start + 10, y=y_start + 10, text=r.id)
 
     def draw_connection(self, r1: Room, r2: Room):
         conn_color = pygame.Color(light_gray)
