@@ -26,9 +26,9 @@ step = 0
 while running:
     screen.blit(image, (0, 0))
     if step == 1:
-        move_cleaner(floor0.get_room('r5'), floor0.get_room('corridor'))
+        move_cleaner(floor0.get_room('r5'), floor0.get_room('cs2'))
     if step == 2:
-        move_cleaner(floor0.get_room('corridor'), floor0.get_room('r6'))
+        move_cleaner(floor0.get_room('cs2'), floor0.get_room('r6'))
     for room in rooms:
         if room.cleaners > 0:
             rect = pygame.Rect(room.pos_x, img_height - room.pos_y, rect_size, rect_size)
