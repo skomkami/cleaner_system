@@ -1,5 +1,6 @@
 import pygraphviz as pgv
 from model.model import Room, RoomType
+import math
 
 
 class LevelGraph(pgv.AGraph):
@@ -26,7 +27,7 @@ class LevelGraph(pgv.AGraph):
         if r.room_type == RoomType.Hall:
             color = "#F5F0AC"
 
-        size = r.surface / max_r_surface
+        size = math.log(r.surface, max_r_surface)
 
         # use label instead of xlabel to print id inside room
         super(LevelGraph, self).add_node(r.id, shape="circle", label="", xlabel=r.id, penwidth='3',  width=size, height=size,
