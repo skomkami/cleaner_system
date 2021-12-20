@@ -2,154 +2,178 @@
   "level_no": 0,
   "rooms": [
     {
+      "id": "hl",
+      "room_type": "Hall",
+      "connected_to": [
+        "cs1"
+      ],
+      "pos_x": 0,
+      "pos_y": 0,
+      "width": 4,
+      "height": 9
+    },
+    {
       "id": "cs1",
-      "surface": 20,
       "room_type": "Hall",
       "connected_to": [
         "cs2"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 4,
+      "pos_y": 4,
+      "width": 3,
+      "height": 2
     },
     {
       "id": "cs2",
-      "surface": 20,
       "room_type": "Hall",
       "connected_to": [
         "cs3"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 7,
+      "pos_y": 4,
+      "width": 3,
+      "height": 2
     },
     {
       "id": "cs3",
-      "surface": 20,
       "room_type": "Hall",
       "connected_to": [
         "cs4"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 10,
+      "pos_y": 4,
+      "width": 3,
+      "height": 2
     },
     {
       "id": "cs4",
-      "surface": 20,
       "room_type": "Hall",
+      "connected_to": [
+        "cs5"
+      ],
+      "pos_x": 13,
+      "pos_y": 4,
+      "width": 3,
+      "height": 2
+    },
+    {
+      "id": "cs5",
+      "room_type": "Hall",
+      "connected_to": [
+        "hr"
+      ],
+      "pos_x": 16,
+      "pos_y": 4,
+      "width": 3,
+      "height": 2
+    },
+    {
+      "id": "hr",
+      "room_type": "Hall",
+      "connected_to": [
+        "w240"
+      ],
+      "pos_x": 19,
+      "pos_y": 4,
+      "width": 5,
+      "height": 5
+    },
+    {
+      "id": "r224",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "cs1"
+      ],
+      "pos_x": 4,
+      "pos_y": 0,
+      "width": 4,
+      "height": 4
+    },
+    {
+      "id": "r228",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "cs2"
+      ],
+      "pos_x": 8,
+      "pos_y": 0,
+      "width": 4,
+      "height": 4
+    },
+    {
+      "id": "r232",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "cs3"
+      ],
+      "pos_x": 12,
+      "pos_y": 0,
+      "width": 4,
+      "height": 4
+    },
+    {
+      "id": "w240",
+      "room_type": "LectureHall",
       "connected_to": [],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 16,
+      "pos_y": 0,
+      "width": 8,
+      "height": 4
     },
     {
-      "id": "r1",
-      "surface": 30.5,
+      "id": "tl",
+      "room_type": "Toilet",
+      "connected_to": [
+        "hl"
+      ],
+      "pos_x": 4,
+      "pos_y": 6,
+      "width": 2,
+      "height": 3
+    },
+    {
+      "id": "r208",
       "room_type": "LaboratoryRoom",
       "connected_to": [
         "cs1"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 6,
+      "pos_y": 6,
+      "width": 4,
+      "height": 3
     },
     {
-      "id": "r2",
-      "surface": 24.5,
+      "id": "r212",
       "room_type": "LaboratoryRoom",
-      "connected_to": [
-        "cs1"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "r3",
-      "surface": 31,
-      "room_type": "LaboratoryRoom",
-      "connected_to": [
-        "cs2",
-        "r4"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "r4",
-      "surface": 33,
-      "room_type": "LaboratoryRoom",
-      "connected_to": [
-        "cs2"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "r5",
-      "surface": 36,
-      "room_type": "LaboratoryRoom",
-      "connected_to": [
-        "cs2"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "r6",
-      "surface": 22,
-      "room_type": "LaboratoryRoom",
-      "connected_to": [
-        "cs2"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "r7",
-      "surface": 11,
-      "room_type": "LaboratoryRoom",
-      "connected_to": [
-        "cs3",
-        "r8"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "r8",
-      "surface": 80,
-      "room_type": "LectureHall",
       "connected_to": [
         "cs3"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 10,
+      "pos_y": 6,
+      "width": 3,
+      "height": 3
     },
     {
-      "id": "r9",
-      "surface": 60,
-      "room_type": "LectureHall",
-      "connected_to": [
-        "cs3"
-      ],
-      "pos_x": null,
-      "pos_y": null
-    },
-    {
-      "id": "t1",
-      "surface": 15,
-      "room_type": "Toilet",
+      "id": "r216",
+      "room_type": "LaboratoryRoom",
       "connected_to": [
         "cs4"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 13,
+      "pos_y": 6,
+      "width": 3,
+      "height": 3
     },
     {
-      "id": "t2",
-      "surface": 12,
+      "id": "tr",
       "room_type": "Toilet",
       "connected_to": [
-        "cs4"
+        "hr"
       ],
-      "pos_x": null,
-      "pos_y": null
+      "pos_x": 16,
+      "pos_y": 6,
+      "width": 3,
+      "height": 3
     }
   ]
 }
