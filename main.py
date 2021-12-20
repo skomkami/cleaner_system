@@ -1,9 +1,12 @@
 import pygame
 from graph.draw_graph import draw_floor
-from model.test_data import floor0
+#from model.test_data import floor0
 from model.model import move_person, move_cleaner
 import time
+from model.jsonHelper import toFile, fromFile
 
+#toFile(floor0,"floor0.json")
+floor0 = fromFile("floor0.json")
 
 filename = "floor.png"
 

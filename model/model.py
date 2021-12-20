@@ -2,15 +2,17 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 from typing import List, Optional
+import json
 
-
-class RoomType(Enum):
+class RoomType(str,Enum):
     LectureHall = 'LectureHall'
     LaboratoryRoom = 'LaboratoryRoom'
     Hall = 'Hall'
     Toilet = 'Toilet'
     Administration = 'Administration'
     Entrance = 'Entrance'
+    def toJSON(self):
+        return json.dumps(self, default=lambda x: x.value)
 
 
 @dataclass
