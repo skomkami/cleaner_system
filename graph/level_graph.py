@@ -9,8 +9,8 @@ class LevelGraph(pgv.AGraph):
         # self.graph_attr['rankdir'] = 'LR'
         # self.node_attr['shape'] = 'Mrecord'
         self.graph_attr['splines'] = 'ortho'
-        self.graph_attr['nodesep'] = '0.7'
-        # self.graph_attr['size'] = '4,8!'
+        self.graph_attr['nodesep'] = '1'
+        # self.graph_attr['size'] = '10,3!'
         self.node_attr['style'] = 'filled'
         self.edge_attr.update(penwidth='2')
 
