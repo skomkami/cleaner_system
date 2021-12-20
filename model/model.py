@@ -25,6 +25,8 @@ class Room:
     # position on graph
     pos_x: Optional[int]
     pos_y: Optional[int]
+    cleaners = 1
+    people = 1
 
 
 @dataclass
@@ -37,3 +39,6 @@ class Floor:
 
     def get_max_room_surface(self):
         return max(map(lambda r: r.surface, self.rooms))
+
+    def get_all_rooms(self):
+        return self.rooms
