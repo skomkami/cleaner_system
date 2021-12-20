@@ -42,3 +42,15 @@ class Floor:
 
     def get_all_rooms(self):
         return self.rooms
+
+
+def move_person(room1, room2):
+    if room1.people > 0:
+        room1.people -= 1
+        room2.people += 1
+
+
+def move_cleaner(room1, room2):
+    if room1.cleaners > 0:
+        room1.cleaners -= 1
+        room2.cleaners += 1
