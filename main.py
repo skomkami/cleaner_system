@@ -1,7 +1,6 @@
 import pygame
-from graph.draw_graph import draw_floor
+from drawer.draw_floor import draw_floor
 from model.test_data import floor0
-from model.model import move_person, move_cleaner
 from drawer.room_drawer import RoomDrawer
 from drawer.rectangle import Rectangle
 
