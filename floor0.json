@@ -146,7 +146,7 @@
       "id": "r212",
       "room_type": "LaboratoryRoom",
       "connected_to": [
-        "cs2"
+        "cs3"
       ],
       "pos_x": 10,
       "pos_y": 6,
@@ -157,7 +157,7 @@
       "id": "r216",
       "room_type": "LaboratoryRoom",
       "connected_to": [
-        "cs3"
+        "cs4"
       ],
       "pos_x": 13,
       "pos_y": 6,
