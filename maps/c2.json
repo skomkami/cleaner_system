@@ -1,0 +1,379 @@
+{
+  "level_no": 0,
+  "rooms": [
+    {
+      "id": "stairway_1",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_1"
+      ],
+      "pos_x": 0,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "hall_1",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 0,
+      "pos_y": 3,
+      "width": 6,
+      "height": 13
+    },
+    {
+      "id": "hall_2_seg_a",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 6,
+      "pos_y": 3,
+      "width": 22,
+      "height": 3
+    },
+    {
+      "id": "hall_2_seg_b",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 28,
+      "pos_y": 3,
+      "width": 22,
+      "height": 3
+    },
+    {
+      "id": "hall_2_seg_c",
+      "room_type": "Hall",
+      "connected_to": [
+      ],
+      "pos_x": 50,
+      "pos_y": 3,
+      "width": 22,
+      "height": 3
+    },
+    {
+      "id": "elevator_1",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_1"
+      ],
+      "pos_x": 6,
+      "pos_y": 9,
+      "width": 6,
+      "height": 1
+    },
+    {
+      "id": "wc_1",
+      "room_type": "Toilet",
+      "connected_to": [
+        "hall_1"
+      ],
+      "pos_x": 6,
+      "pos_y": 10,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "wc_2",
+      "room_type": "Toilet",
+      "connected_to": [
+        "hall_1"
+      ],
+      "pos_x": 6,
+      "pos_y": 13,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "214",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 6,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "215",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 12,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "216",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 18,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "217",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 24,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "218",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 30,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "219",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 36,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "220",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 42,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "221",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 48,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "222",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 54,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "223",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 60,
+      "pos_y": 0,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "210",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 6,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "209",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 12,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "208",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 18,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "207",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_a"
+      ],
+      "pos_x": 24,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "206",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 30,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "stairway_2",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 36,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "205",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_b"
+      ],
+      "pos_x": 42,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "204",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 48,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "203",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 54,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "202",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 60,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "201",
+      "room_type": "LaboratoryRoom",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 66,
+      "pos_y": 6,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "224",
+      "room_type": "LectureHall",
+      "connected_to": [
+        "hall_2_seg_c",
+        "hall_3"
+      ],
+      "pos_x": 66,
+      "pos_y": 0,
+      "width": 24,
+      "height": 3
+    },
+    {
+      "id": "hall_3",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_2_seg_c"
+      ],
+      "pos_x": 72,
+      "pos_y": 3,
+      "width": 18,
+      "height": 10
+    },
+    {
+      "id": "elevator_2",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_3"
+      ],
+      "pos_x": 66,
+      "pos_y": 9,
+      "width": 6,
+      "height": 1
+    },
+    {
+      "id": "wc_3",
+      "room_type": "Toilet",
+      "connected_to": [
+        "hall_3"
+      ],
+      "pos_x": 66,
+      "pos_y": 10,
+      "width": 6,
+      "height": 3
+    },
+    {
+      "id": "stairway_3",
+      "room_type": "Hall",
+      "connected_to": [
+        "hall_3"
+      ],
+      "pos_x": 78,
+      "pos_y": 13,
+      "width": 12,
+      "height": 3
+    }
+  ]
+}
