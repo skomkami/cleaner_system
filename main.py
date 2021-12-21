@@ -4,8 +4,18 @@ from drawer.legend_drawer import LegendDrawer
 from drawer.rectangle import Rectangle
 from drawer.room_drawer import RoomDrawer
 from model.jsonHelper import fromFile
+import os
+import sys
 
-floor0 = fromFile("floor0.json")
+
+cwd = os.getcwd()
+if len(sys.argv) > 1:
+    config_file_name = sys.argv[1]
+    config_path = os.path.join(cwd, config_file_name)
+else:
+    config_file_name = "floor0.json"
+    config_path = os.path.join(cwd, "maps", config_file_name)
+floor0 = fromFile(config_path)
 
 rect_size = 25
 pygame.init()
