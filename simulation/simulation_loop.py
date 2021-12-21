@@ -7,6 +7,7 @@ from drawer.draw_floor import draw_floor
 from drawer.legend_drawer import LegendDrawer
 from drawer.room_drawer import RoomDrawer
 from drawer.rectangle import Rectangle
+from drawer.timer_drawer import TimerDrawer
 from model.model import Floor, RoomSimulation
 
 
@@ -75,14 +76,17 @@ class Simulation:
             blocks_x=self.floor.get_blocks_x(),
             blocks_y=self.floor.get_blocks_y()
         )
-        legend_drawer = LegendDrawer(self.screen, Rectangle(0, 600, self.img_width, 200))
+        timer_width = 250
+        legend_drawer = LegendDrawer(self.screen, Rectangle(timer_width, 600, self.img_width-150, 200))
+        timer_drawer = TimerDrawer(self.screen, Rectangle(0, 600, timer_width, 200))
+        legend_drawer.draw()
         #path = self.find_shortest_path('cs2', 'w240')
         path = self.find_nearest_cleaner('tl')
         print(path)
         self.cleaner_paths.append(path)
         while running:
+            timer_drawer.tick_and_draw()
             draw_floor(self.floor, room_drawer)
-            legend_drawer.draw()
             # if step == 1:
             #     move_cleaner(floor0.get_room('r5'), floor0.get_room('cs2'))
             # if step == 2:
