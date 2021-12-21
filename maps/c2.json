@@ -3,7 +3,7 @@
   "rooms": [
     {
       "id": "stairway_1",
-      "room_type": "Hall",
+      "room_type": "Entrance",
       "connected_to": [
         "hall_1"
       ],
@@ -57,7 +57,7 @@
     },
     {
       "id": "elevator_1",
-      "room_type": "Hall",
+      "room_type": "Entrance",
       "connected_to": [
         "hall_1"
       ],
@@ -255,7 +255,7 @@
     },
     {
       "id": "stairway_2",
-      "room_type": "Hall",
+      "room_type": "Entrance",
       "connected_to": [
         "hall_2_seg_b"
       ],
@@ -344,7 +344,7 @@
     },
     {
       "id": "elevator_2",
-      "room_type": "Hall",
+      "room_type": "Entrance",
       "connected_to": [
         "hall_3"
       ],
@@ -366,7 +366,7 @@
     },
     {
       "id": "stairway_3",
-      "room_type": "Hall",
+      "room_type": "Entrance",
       "connected_to": [
         "hall_3"
       ],
