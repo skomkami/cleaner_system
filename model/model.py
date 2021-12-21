@@ -20,13 +20,11 @@ class Room:
     # position on graph
     pos_x: int
     pos_y: int
+    #
     room_center_x = 0
     room_center_y = 0
     width: int
     height: int
-    # TODO PN to przechowywać w stanie symulacji
-    cleaners = 1
-    people = 1
 
     def surface(self):
         return self.width * self.height
@@ -37,13 +35,30 @@ class Room:
     def end_y(self):
         return self.pos_y+self.height
 
+
+class RoomSimulation:
+
+    room: Room
+    cleaners = 0
+    free_cleaners: int
+    people = 5
+
+    def __init__(self, room, cleaners):
+        self.room = room
+        self.cleaners = cleaners
+
+
 @dataclass
 class Floor:
     level_no: int
     rooms: List[Room]
+    room_simulations: List[RoomSimulation] = None
 
     def get_room(self, rid: str):
         return next((room for room in self.rooms if room.id == rid), None)
+
+    def get_room_simulation(self, rid: str):
+        return next((room for room in self.room_simulations if room.room.id == rid), None)
 
     def get_max_room_surface(self):
         return max(map(lambda r: r.surface(), self.rooms))
@@ -56,6 +71,11 @@ class Floor:
 
     def get_blocks_y(self):
         return max(map(lambda r: r.end_y(), self.rooms))
+
+
+class Cleaner:
+    location: Room
+
 
 def move_person(room1, room2):
     if room1.people > 0:
