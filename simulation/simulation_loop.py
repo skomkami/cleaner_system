@@ -18,6 +18,7 @@ class Simulation:
     img_width = 1500
     screen = pygame.display.set_mode((img_width, img_height))
     color_red = (255, 0, 0)
+    color_blue = (0, 0, 255)
     color_green = (0, 255, 0)
     color_yellow = (255, 255, 0)
     floor: Floor
@@ -43,6 +44,17 @@ class Simulation:
 
     def move_cleaners(self):
         for path in self.cleaner_paths:
+            if not path:
+                self.cleaner_paths.remove(path)
+                continue
+            if len(path) == 1:
+                room = self.floor.get_room_simulation(path[0])
+                if room.cleaners > 0:
+                    room.cleaners -= 1
+                    room.busy_cleaners += 1
+                elif room.moving_cleaners > 0:
+                    room.moving_cleaners -= 1
+                    room.busy_cleaners += 1
             if len(path) < 2:
                 self.cleaner_paths.remove(path)
             else:
@@ -66,6 +78,10 @@ class Simulation:
     def add_cleaner(self, room):
         room = self.floor.get_room_simulation(room)
         room.cleaners += 1
+
+    def add_free_cleaner(self, room):
+        room = self.floor.get_room_simulation(room)
+        room.free_cleaners += 1
 
     def run_simulation(self, floor):
         rooms_with_cleaner = ['cs2', 'hr', 'w240']
@@ -91,9 +107,10 @@ class Simulation:
         timer_drawer = TimerDrawer(self.screen, Rectangle(0, 600, timer_width, 200))
         #path = self.find_shortest_path('cs2', 'w240')
         path = self.find_nearest_cleaner('tl')
-        print(path)
         self.cleaner_paths.append(path)
         while running:
+            bathroom = self.floor.get_room_simulation('tl')
+            print(bathroom.moving_cleaners)
             legend_drawer.draw()
             timer_drawer.tick_and_draw()
             draw_floor(self.floor, room_drawer)
@@ -103,11 +120,19 @@ class Simulation:
             #     move_cleaner(floor0.get_room('cs2'), floor0.get_room('r6'))
             # TODO - pack drawing code below into nice function
             for room in rooms:
-                if room.cleaners > 0:
+                if room.cleaners > 0 or room.moving_cleaners > 0:
                     rect = pygame.Rect(room.room.pos_x - 15, self.img_height - room.room.pos_y - 15, self.rect_size, self.rect_size)
                     rect.center = (room.room.room_center_x + 15, room.room.room_center_y - 15)
                     pygame.draw.rect(self.screen, self.color_red, rect)
-                    text = font.render(str(room.cleaners), True, self.BLACK)
+                    text = font.render(str(room.cleaners + room.moving_cleaners), True, self.BLACK)
+                    text_rect = text.get_rect()
+                    text_rect.center = rect.center
+                    self.screen.blit(text, text_rect)
+                if room.busy_cleaners > 0:
+                    rect = pygame.Rect(room.room.pos_x - 15, self.img_height - room.room.pos_y - 15, self.rect_size, self.rect_size)
+                    rect.center = (room.room.room_center_x + 15, room.room.room_center_y + 15)
+                    pygame.draw.rect(self.screen, self.color_blue, rect)
+                    text = font.render(str(room.busy_cleaners), True, self.BLACK)
                     text_rect = text.get_rect()
                     text_rect.center = rect.center
                     self.screen.blit(text, text_rect)
@@ -135,10 +160,13 @@ class Simulation:
             self.move_people()
             for room in [room for room in rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                 if room.get_dirt_psqm() > 5.0:
-                    self.cleaner_paths.append(self.find_nearest_cleaner(room.room.id))
+                    self.cleaner_paths.append(self.find_nearest_cleaner(room.room.id)) # TODO check if cleaner was found
                     room.cleaner_is_requested = True
             for room in rooms:
                 room.clean()
+                if room.dirt == 0 and room.busy_cleaners > 0:
+                    room.cleaners = room.busy_cleaners
+                    room.busy_cleaners = 0
             # self.move_people()
             pygame.display.update()
             step += 1
