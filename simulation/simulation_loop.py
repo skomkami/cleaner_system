@@ -1,5 +1,5 @@
 import pygame
-import copy
+import random
 import networkx as nx
 
 import model.model
@@ -8,7 +8,7 @@ from drawer.legend_drawer import LegendDrawer
 from drawer.room_drawer import RoomDrawer
 from drawer.rectangle import Rectangle
 from drawer.timer_drawer import TimerDrawer
-from model.model import Floor, RoomSimulation
+from model.model import Floor, RoomSimulation, RoomType
 
 
 class Simulation:
@@ -19,9 +19,11 @@ class Simulation:
     screen = pygame.display.set_mode((img_width, img_height))
     color_red = (255, 0, 0)
     color_green = (0, 255, 0)
+    color_yellow = (255, 255, 0)
     floor: Floor
     BLACK = (0, 0, 0)
     cleaner_paths = []
+    people_paths = []
     graph = None
 
     def create_floor_graph(self, rooms):
@@ -45,6 +47,14 @@ class Simulation:
                 self.cleaner_paths.remove(path)
             else:
                 model.model.move_cleaner(self.floor.get_room_simulation(path[0]), self.floor.get_room_simulation(path[1]))
+                path.pop(0)
+
+    def move_people(self):
+        for path in self.people_paths:
+            if len(path) < 2:
+                self.people_paths.remove(path)
+            else:
+                model.model.move_person(self.floor.get_room_simulation(path[0]), self.floor.get_room_simulation(path[1]))
                 path.pop(0)
 
     def find_nearest_cleaner(self, room):
@@ -79,40 +89,57 @@ class Simulation:
         timer_width = 250
         legend_drawer = LegendDrawer(self.screen, Rectangle(timer_width, 600, self.img_width-150, 200))
         timer_drawer = TimerDrawer(self.screen, Rectangle(0, 600, timer_width, 200))
-        legend_drawer.draw()
         #path = self.find_shortest_path('cs2', 'w240')
         path = self.find_nearest_cleaner('tl')
         print(path)
         self.cleaner_paths.append(path)
         while running:
+            legend_drawer.draw()
             timer_drawer.tick_and_draw()
             draw_floor(self.floor, room_drawer)
             # if step == 1:
             #     move_cleaner(floor0.get_room('r5'), floor0.get_room('cs2'))
             # if step == 2:
             #     move_cleaner(floor0.get_room('cs2'), floor0.get_room('r6'))
+            # TODO - pack drawing code below into nice function
             for room in rooms:
                 if room.cleaners > 0:
-                    rect = pygame.Rect(room.room.pos_x - 15, self.img_height - room.room.pos_y, self.rect_size, self.rect_size)
-                    rect.center = (room.room.room_center_x + 15, room.room.room_center_y)
+                    rect = pygame.Rect(room.room.pos_x - 15, self.img_height - room.room.pos_y - 15, self.rect_size, self.rect_size)
+                    rect.center = (room.room.room_center_x + 15, room.room.room_center_y - 15)
                     pygame.draw.rect(self.screen, self.color_red, rect)
                     text = font.render(str(room.cleaners), True, self.BLACK)
                     text_rect = text.get_rect()
                     text_rect.center = rect.center
                     self.screen.blit(text, text_rect)
                 if room.people > 0:
-                    rect2 = pygame.Rect(room.room.pos_x, self.img_height - room.room.pos_y, self.rect_size, self.rect_size)
-                    rect2.center = (room.room.room_center_x - 15, room.room.room_center_y)
+                    rect2 = pygame.Rect(room.room.pos_x, self.img_height - room.room.pos_y - 15, self.rect_size, self.rect_size)
+                    rect2.center = (room.room.room_center_x - 15, room.room.room_center_y - 15)
                     pygame.draw.rect(self.screen, self.color_green, rect2)
                     text2 = font.render(str(room.people), True, self.BLACK)
                     text_rect2 = text2.get_rect()
                     text_rect2.center = rect2.center
                     self.screen.blit(text2, text_rect2)
+                rect3 = pygame.Rect(room.room.pos_x, self.img_height - room.room.pos_y - 15, self.rect_size, self.rect_size)
+                rect3.center = (room.room.room_center_x - 15, room.room.room_center_y + 15)
+                pygame.draw.rect(self.screen, self.color_yellow, rect3)
+                text3 = font.render(str(round(room.get_dirt_psqm(), 2)), True, self.BLACK)
+                text_rect3 = text3.get_rect()
+                text_rect3.center = rect3.center
+                self.screen.blit(text3, text_rect3)
+                room.dirt += room.people
+            room = random.choice([room for room in rooms if room.people > 0])
+            for i in range (random.randint(2,4)):
+                path = self.find_shortest_path(room.room.id, 'tl')
+                self.people_paths.append(path)
             self.move_cleaners()
-            step_text = font.render(str(step), True, self.BLACK)
-            stepRectD = step_text.get_rect()
-            stepRectD.topleft = (5, 500)
-            self.screen.blit(step_text, stepRectD)
+            self.move_people()
+            for room in [room for room in rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
+                if room.get_dirt_psqm() > 5.0:
+                    self.cleaner_paths.append(self.find_nearest_cleaner(room.room.id))
+                    room.cleaner_is_requested = True
+            for room in rooms:
+                room.clean()
+            # self.move_people()
             pygame.display.update()
             step += 1
             pygame.time.delay(1000)

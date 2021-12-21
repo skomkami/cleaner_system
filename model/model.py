@@ -40,13 +40,19 @@ class RoomSimulation:
 
     room: Room
     cleaners = 0
-    free_cleaners: int
+    cleaner_is_requested = False
     people = 5
+    dirt = 0
 
     def __init__(self, room, cleaners):
         self.room = room
         self.cleaners = cleaners
 
+    def get_dirt_psqm(self):
+        return self.dirt/self.room.surface()
+
+    def clean(self):
+        self.dirt = max(0, self.dirt - 2 * self.cleaners)
 
 @dataclass
 class Floor:
