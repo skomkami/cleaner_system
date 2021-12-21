@@ -20,11 +20,13 @@ class Room:
     # position on graph
     pos_x: int
     pos_y: int
+    room_center_x = 0
+    room_center_y = 0
     width: int
     height: int
     # TODO PN to przechowywać w stanie symulacji
-    # cleaners = 1
-    # people = 1
+    cleaners = 1
+    people = 1
 
     def surface(self):
         return self.width * self.height

@@ -27,6 +27,8 @@ class RoomDrawer(Drawer):
         y_start = int(self.block_h * r.pos_y)
         width = int(self.block_w * r.width)
         height = int(self.block_h * r.height)
+        r.room_center_x = x_start + width//2
+        r.room_center_y = y_start + height//2
         self.draw_rect(x=x_start + self.border, y=y_start + self.border, width=width - self.border,
                        height=height - self.border,
                        color=room_color)
