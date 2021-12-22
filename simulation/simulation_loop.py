@@ -85,6 +85,7 @@ class Simulation:
         room.free_cleaners += 1
 
     def run_simulation(self, floor):
+        # TODO - separate into drawing, simulation parameters, and simulation running
         rooms_with_cleaner = ['cs2', 'hr', 'w240', '214', '218', 'wc_3', '224']
         self.floor = floor
         running = True
@@ -117,7 +118,6 @@ class Simulation:
             #     move_cleaner(floor0.get_room('r5'), floor0.get_room('cs2'))
             # if step == 2:
             #     move_cleaner(floor0.get_room('cs2'), floor0.get_room('r6'))
-            # TODO - pack drawing code below into nice function
             for room in rooms:
                 if room.cleaners > 0 or room.moving_cleaners > 0:
                     rect = pygame.Rect(room.room.pos_x - 15, self.img_height - room.room.pos_y - 15, self.rect_size, self.rect_size)
@@ -160,8 +160,10 @@ class Simulation:
             self.move_people()
             for room in [room for room in rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                 if room.get_dirt_psqm() > 5.0:
-                    self.cleaner_paths.append(self.find_nearest_cleaner(room.room.id)) # TODO check if cleaner was found
-                    room.cleaner_is_requested = True
+                    path = self.find_nearest_cleaner(room.room.id)
+                    if path:
+                        self.cleaner_paths.append(path)
+                        room.cleaner_is_requested = True
             for room in rooms:
                 room.clean()
                 if room.dirt == 0 and room.busy_cleaners > 0:
