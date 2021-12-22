@@ -39,7 +39,10 @@ class Simulation:
         return g
 
     def find_shortest_path(self, room1, room2):
-        path = nx.shortest_path(self.graph, room1, room2)
+        try:
+            path = nx.shortest_path(self.graph, room1, room2)
+        except Exception:
+            return None
         return path
 
     def move_cleaners(self):
@@ -153,9 +156,12 @@ class Simulation:
                 room.dirt += room.people
             room = random.choice([room for room in rooms if room.people > 0])
             for i in range (random.randint(2,4)):
-                # path = self.find_shortest_path(room.room.id, 'tl')
                 path = self.find_shortest_path(room.room.id, 'stairway_1')
-                self.people_paths.append(path)
+                if path:
+                    self.people_paths.append(path)
+                path = self.find_shortest_path(room.room.id, 'tl')
+                if path:
+                    self.people_paths.append(path)
             self.move_cleaners()
             self.move_people()
             for room in [room for room in rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
