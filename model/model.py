@@ -58,7 +58,7 @@ class RoomSimulation:
         return self.dirt/self.room.surface()
 
     def clean(self):
-        self.dirt = max(0, self.dirt - 2 * self.busy_cleaners)
+        self.dirt = max(0, self.dirt - 4 * self.busy_cleaners)
 
 @dataclass
 class Floor:
@@ -101,3 +101,8 @@ def move_cleaner(room1, room2):
     elif room1.cleaners > 0:
         room1.cleaners -= 1
         room2.moving_cleaners += 1
+
+def prepare_cleaner(room):
+    if room.cleaners > 0:
+        room.cleaners -= 1
+        room.moving_cleaners += 1

@@ -76,6 +76,8 @@ class Simulation:
         nearest_rooms = list(nx.bfs_tree(self.graph, room))
         for room2 in nearest_rooms:
             if self.floor.get_room_simulation(room2).cleaners > 0:
+                room3 = self.floor.get_room_simulation(room2)
+                model.model.prepare_cleaner(room3)
                 return self.find_shortest_path(room2, room)
 
     def add_cleaner(self, room):
