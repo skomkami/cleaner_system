@@ -77,14 +77,15 @@ class Simulation:
 
     def add_cleaner(self, room):
         room = self.floor.get_room_simulation(room)
-        room.cleaners += 1
+        if room:
+            room.cleaners += 1
 
     def add_free_cleaner(self, room):
         room = self.floor.get_room_simulation(room)
         room.free_cleaners += 1
 
     def run_simulation(self, floor):
-        rooms_with_cleaner = ['cs2', 'hr', 'w240']
+        rooms_with_cleaner = ['cs2', 'hr', 'w240', '214', '218', 'wc_3', '224']
         self.floor = floor
         running = True
         pygame.init()
@@ -106,11 +107,9 @@ class Simulation:
         legend_drawer = LegendDrawer(self.screen, Rectangle(timer_width, 600, self.img_width-150, 200))
         timer_drawer = TimerDrawer(self.screen, Rectangle(0, 600, timer_width, 200))
         #path = self.find_shortest_path('cs2', 'w240')
-        path = self.find_nearest_cleaner('tl')
-        self.cleaner_paths.append(path)
+        #path = self.find_nearest_cleaner('tl')
+        #self.cleaner_paths.append(path)
         while running:
-            bathroom = self.floor.get_room_simulation('tl')
-            print(bathroom.moving_cleaners)
             legend_drawer.draw()
             timer_drawer.tick_and_draw()
             draw_floor(self.floor, room_drawer)
@@ -154,7 +153,8 @@ class Simulation:
                 room.dirt += room.people
             room = random.choice([room for room in rooms if room.people > 0])
             for i in range (random.randint(2,4)):
-                path = self.find_shortest_path(room.room.id, 'tl')
+                # path = self.find_shortest_path(room.room.id, 'tl')
+                path = self.find_shortest_path(room.room.id, 'stairway_1')
                 self.people_paths.append(path)
             self.move_cleaners()
             self.move_people()
