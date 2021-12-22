@@ -1,4 +1,4 @@
-from model.model import Room, RoomType, Floor
+from model.model import *
 
 hl = Room(id='hl', connected_to=['cs1'], room_type=RoomType.Hall, pos_x=0, pos_y=0, width=4, height=9)
 cs1 = Room(id='cs1', connected_to=['cs2'], room_type=RoomType.Hall, pos_x=4, pos_y=4, width=3, height=2)

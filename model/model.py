@@ -1,15 +1,19 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import List
+import json
 
 
-class RoomType(Enum):
+class RoomType(str, Enum):
     LectureHall = 'LectureHall'
     LaboratoryRoom = 'LaboratoryRoom'
     Hall = 'Hall'
     Toilet = 'Toilet'
     Administration = 'Administration'
     Entrance = 'Entrance'
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda x: x.value)
 
 
 @dataclass
@@ -60,7 +64,6 @@ class RoomSimulation:
 class Floor:
     level_no: int
     rooms: List[Room]
-    room_simulations: List[RoomSimulation] = None
 
     def get_room(self, rid: str):
         return next((room for room in self.rooms if room.id == rid), None)
