@@ -12,5 +12,5 @@ else:
     config_path = os.path.join(cwd, "maps", config_file_name)
 floor0 = fromFile(config_path)
 
-simulation = Simulation()
-simulation.run_simulation(floor0)
+simulation = Simulation(floor0)
+simulation.run_simulation()
