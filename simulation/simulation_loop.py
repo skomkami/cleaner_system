@@ -24,6 +24,7 @@ class Simulation:
         self.rooms = [RoomSimulation(room, 0) for room in self.floor.get_all_rooms()]
         floor.room_simulations = self.rooms
         self.drawer = SimulationDrawer(floor)
+        self.graph = self.create_floor_graph(self.rooms)
 
     def create_floor_graph(self, rooms):
         graph = dict()
@@ -67,7 +68,9 @@ class Simulation:
             if len(path) < 2:
                 self.people_paths.remove(path)
             else:
-                model.model.move_person(self.floor.get_room_simulation(path[0]), self.floor.get_room_simulation(path[1]))
+                room1 = self.floor.get_room_simulation(path[0])
+                room2 = self.floor.get_room_simulation(path[1])
+                model.model.move_person(room1, room2)
                 path.pop(0)
 
     def find_nearest_cleaner(self, room):
@@ -94,7 +97,7 @@ class Simulation:
             self.add_cleaner(room)
 
     # TODO people movement simulation
-    def move_people(self, rooms):
+    def calculate_people_movement(self, rooms):
         room = random.choice([room for room in rooms if room.people > 0])
         for i in range(random.randint(2, 4)):
             path = self.find_shortest_path(room.room.id, 'stairway_1')
@@ -106,39 +109,32 @@ class Simulation:
 
     def run_simulation(self):
         # TODO - separate into drawing, simulation parameters, and simulation running
+        self.initialize_simulation()
         running = True
-        self.graph = self.create_floor_graph(self.rooms)
         step = 0
-        rooms = [RoomSimulation(room, 0) for room in self.floor.get_all_rooms()]
         while running:
-            for room in rooms:
+            for room in self.rooms:
                 room.dirt += room.people
-            self.move_cleaners()
-            self.move_people()
+            self.calculate_people_movement(self.rooms)
             # TODO cleaners movement rules
-            for room in [room for room in rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
+            for room in [room for room in self.rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                 if room.get_dirt_psqm() > 5.0:
                     path = self.find_nearest_cleaner(room.room.id)
                     if path:
                         self.cleaner_paths.append(path)
                         room.cleaner_is_requested = True
-            for room in rooms:
+            self.move_cleaners()
+            self.move_people()
+            for room in self.rooms:
                 room.clean()
                 if room.dirt == 0 and room.busy_cleaners > 0:
                     room.cleaners = room.busy_cleaners
                     room.busy_cleaners = 0
-            '''
-            pygame.display.update()
-            pygame.time.delay(1000)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-            '''
             values = dict()
-            for room in rooms:
-                values[room.room.id] = [room.cleaners, room.moving_cleaners, room.busy_cleaners, room.people, room.dirt,
-                                        round(room.dirt/room.room.surface(), 2)]
+            for room in self.rooms:
+                values[room.room.id] = [room.cleaners, room.moving_cleaners, room.busy_cleaners, room.people,
+                                        round(room.get_dirt_psqm(), 2)]
             if self.drawer:
                 self.drawer.draw_frame(values)
-            time.sleep(1000)
-
+            step += 1
+            time.sleep(1)

@@ -93,7 +93,6 @@ def move_person(room1, room2):
         room1.people -= 1
         room2.people += 1
 
-
 def move_cleaner(room1, room2):
     if room1.moving_cleaners > 0:
         room1.moving_cleaners -= 1

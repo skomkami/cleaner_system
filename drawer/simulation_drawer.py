@@ -1,6 +1,6 @@
 import pygame
 import random
-import networkx as nx
+import sys
 
 import model.model
 from drawer.draw_floor import draw_floor
@@ -27,6 +27,7 @@ class SimulationDrawer:
     timer_width = 250
 
     def __init__(self, floor):
+        pygame.init()
         self.floor = floor
         self.room_drawer = RoomDrawer(
             self.screen,
@@ -38,14 +39,14 @@ class SimulationDrawer:
         self.legend_drawer = LegendDrawer(self.screen, Rectangle(self.timer_width, 600, self.img_width - 150, 200))
         self.timer_drawer = TimerDrawer(self.screen, Rectangle(0, 600, self.timer_width, 200))
         self.rooms = [room for room in self.floor.get_all_rooms()]
-        pygame.init()
         self.font = pygame.font.SysFont('Arial', 12)
 
     def draw_frame(self, frame):
+        self.screen.fill(self.BLACK)
         self.legend_drawer.draw()
         self.timer_drawer.tick_and_draw()
         draw_floor(self.floor, self.room_drawer)
-        room_names = frame.columns.values.tolist()
+        room_names = frame.keys()
         for room in room_names:
             room_stats = frame[room] # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - dirt
             room = self.floor.get_room(room)
@@ -79,9 +80,15 @@ class SimulationDrawer:
             rect3 = pygame.Rect(room.pos_x, self.img_height - room.pos_y - 15, self.rect_size, self.rect_size)
             rect3.center = (room.room_center_x - 15, room.room_center_y + 15)
             pygame.draw.rect(self.screen, self.color_yellow, rect3)
-            text3 = self.font.render(room_stats[4], True, self.BLACK)
+            text3 = self.font.render(str(room_stats[4]), True, self.BLACK)
             text_rect3 = text3.get_rect()
             text_rect3.center = rect3.center
             self.screen.blit(text3, text_rect3)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.display.quit()
+                pygame.quit()
+                sys.exit()
 
 
