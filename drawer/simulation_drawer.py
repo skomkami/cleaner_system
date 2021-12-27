@@ -1,6 +1,6 @@
 import pygame
 import random
-import sys
+import json
 
 import model.model
 from drawer.draw_floor import draw_floor
@@ -40,8 +40,12 @@ class SimulationDrawer:
         self.timer_drawer = TimerDrawer(self.screen, Rectangle(0, 600, self.timer_width, 200))
         self.rooms = [room for room in self.floor.get_all_rooms()]
         self.font = pygame.font.SysFont('Arial', 12)
+        self.running = True
 
     def draw_frame(self, frame):
+        if not self.running:
+            return
+        frame = json.loads(frame)
         self.screen.fill(self.BLACK)
         self.legend_drawer.draw()
         self.timer_drawer.tick_and_draw()
@@ -89,6 +93,7 @@ class SimulationDrawer:
             if event.type == pygame.QUIT:
                 pygame.display.quit()
                 pygame.quit()
-                sys.exit()
+                self.running = False
+
 
 

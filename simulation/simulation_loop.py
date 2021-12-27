@@ -1,15 +1,13 @@
-import time
-
-import pygame
 import random
 import networkx as nx
+import time
+import json
+import sys
 
 import model.model
 from model.model import Floor, RoomSimulation, RoomType
 from drawer.simulation_drawer import SimulationDrawer
-import time
-import pandas
-import json
+
 
 class Simulation:
 
@@ -18,6 +16,7 @@ class Simulation:
     people_paths = []
     graph = None
     drawer: SimulationDrawer
+    running = False
 
     def __init__(self, floor):
         self.floor = floor
@@ -65,6 +64,9 @@ class Simulation:
 
     def move_people(self):
         for path in self.people_paths:
+            if not path:
+                self.people_paths.remove(path)
+                continue
             if len(path) < 2:
                 self.people_paths.remove(path)
             else:
@@ -108,33 +110,39 @@ class Simulation:
                 self.people_paths.append(path)
 
     def run_simulation(self):
-        # TODO - separate into drawing, simulation parameters, and simulation running
         self.initialize_simulation()
-        running = True
+        self.running = True
         step = 0
-        while running:
-            for room in self.rooms:
-                room.dirt += room.people
-            self.calculate_people_movement(self.rooms)
-            # TODO cleaners movement rules
-            for room in [room for room in self.rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
-                if room.get_dirt_psqm() > 5.0:
-                    path = self.find_nearest_cleaner(room.room.id)
-                    if path:
-                        self.cleaner_paths.append(path)
-                        room.cleaner_is_requested = True
-            self.move_cleaners()
-            self.move_people()
-            for room in self.rooms:
-                room.clean()
-                if room.dirt == 0 and room.busy_cleaners > 0:
-                    room.cleaners = room.busy_cleaners
-                    room.busy_cleaners = 0
-            values = dict()
-            for room in self.rooms:
-                values[room.room.id] = [room.cleaners, room.moving_cleaners, room.busy_cleaners, room.people,
-                                        round(room.get_dirt_psqm(), 2)]
-            if self.drawer:
-                self.drawer.draw_frame(values)
-            step += 1
-            time.sleep(1)
+
+        while self.running:
+            try:
+                for room in self.rooms:
+                    room.dirt += room.people
+                self.calculate_people_movement(self.rooms)
+                # TODO cleaners movement rules
+                for room in [room for room in self.rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
+                    if room.get_dirt_psqm() > 5.0:
+                        path = self.find_nearest_cleaner(room.room.id)
+                        if path:
+                            self.cleaner_paths.append(path)
+                            room.cleaner_is_requested = True
+                self.move_cleaners()
+                self.move_people()
+                for room in self.rooms:
+                    room.clean()
+                    if room.dirt == 0 and room.busy_cleaners > 0:
+                        room.cleaners = room.busy_cleaners
+                        room.busy_cleaners = 0
+                values = dict()
+                for room in self.rooms:
+                    # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - d
+                    values[room.room.id] = [room.cleaners, room.moving_cleaners, room.busy_cleaners, room.people,
+                                            round(room.get_dirt_psqm(), 2)]
+                values = json.dumps(values)
+                if self.drawer:
+                    self.drawer.draw_frame(values)
+                step += 1
+                time.sleep(1)
+            except KeyboardInterrupt:
+                print("ended")
+                sys.exit(0)
