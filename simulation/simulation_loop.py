@@ -113,7 +113,7 @@ class Simulation:
         self.initialize_simulation()
         self.running = True
         step = 0
-
+        simulation_save = []
         while self.running:
             try:
                 for room in self.rooms:
@@ -138,11 +138,16 @@ class Simulation:
                     # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - d
                     values[room.room.id] = [room.cleaners, room.moving_cleaners, room.busy_cleaners, room.people,
                                             round(room.get_dirt_psqm(), 2)]
+                simulation_save.append(values)
                 values = json.dumps(values)
                 if self.drawer:
-                    self.drawer.draw_frame(values)
+                    self.drawer.draw_from_simulation(values)
                 step += 1
-                time.sleep(1)
             except KeyboardInterrupt:
-                print("ended")
+                # TODO better file write management
+                # TODO better exit management
+                output = dict()
+                output['steps'] = simulation_save
+                with open('output/output.json', 'w+') as outfile:
+                    json.dump(output, outfile)
                 sys.exit(0)

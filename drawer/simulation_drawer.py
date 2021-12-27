@@ -1,15 +1,13 @@
 import pygame
-import random
 import json
 
-import model.model
 from drawer.draw_floor import draw_floor
 from drawer.legend_drawer import LegendDrawer
 from drawer.room_drawer import RoomDrawer
 from drawer.rectangle import Rectangle
 from drawer.timer_drawer import TimerDrawer
-from model.model import Floor, RoomSimulation, RoomType
-import pandas as pd
+from model.model import Floor
+
 
 class SimulationDrawer:
 
@@ -42,10 +40,26 @@ class SimulationDrawer:
         self.font = pygame.font.SysFont('Arial', 12)
         self.running = True
 
+    def draw_from_file(self, filepath):
+        save = None
+        # TODO Exception handling here
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                save = json.load(f)
+        except Exception:
+            pass
+        save = save['steps']
+        for step in save:
+            self.draw_frame(step)
+
+    def draw_from_simulation(self, frame):
+        frame = json.loads(frame)
+        self.draw_frame(frame)
+
     def draw_frame(self, frame):
         if not self.running:
             return
-        frame = json.loads(frame)
+        pygame.event.wait(500)
         self.screen.fill(self.BLACK)
         self.legend_drawer.draw()
         self.timer_drawer.tick_and_draw()
