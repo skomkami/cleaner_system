@@ -1,5 +1,6 @@
 import pygame
 import json
+import sys
 
 from drawer.draw_floor import draw_floor
 from drawer.legend_drawer import LegendDrawer
@@ -59,7 +60,7 @@ class SimulationDrawer:
     def draw_frame(self, frame):
         if not self.running:
             return
-        pygame.event.wait(500)
+        pygame.time.wait(500)
         self.screen.fill(self.BLACK)
         self.legend_drawer.draw()
         self.timer_drawer.tick_and_draw()
@@ -108,6 +109,7 @@ class SimulationDrawer:
                 pygame.display.quit()
                 pygame.quit()
                 self.running = False
+                sys.exit(0)
 
 
 

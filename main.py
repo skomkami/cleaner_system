@@ -13,5 +13,7 @@ else:
     config_path = os.path.join(cwd, "maps", config_file_name)
 floor0 = fromFile(config_path)
 
-simulation = SimulationDrawer(floor0)
-simulation.draw_from_file('output/output.json')
+simulation = Simulation(floor0)
+simulation.run_simulation()
+# simulation = SimulationDrawer(floor0)
+# simulation.draw_from_file('output/output.json')
