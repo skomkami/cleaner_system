@@ -1,4 +1,2 @@
-pygraphviz~=1.7
-pygame~=2.1.0
-pydotplus~=2.0.2
-graphviz~=0.19.1
+networkx==2.6.3
+pygame==2.1.2
