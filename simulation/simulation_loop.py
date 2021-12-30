@@ -5,7 +5,7 @@ import json
 import sys
 
 import model.model
-from model.model import Floor, RoomSimulation, RoomType, Cleaner
+from model.model import Floor, Room, RoomType, Cleaner
 from drawer.simulation_drawer import SimulationDrawer
 
 
@@ -20,7 +20,7 @@ class Simulation:
 
     def __init__(self, floor):
         self.floor = floor
-        self.rooms = [RoomSimulation(room) for room in self.floor.get_all_rooms()]
+        self.rooms = self.floor.get_all_rooms()
         floor.room_simulations = self.rooms
         self.drawer = SimulationDrawer(floor)
         self.graph = self.create_floor_graph(self.rooms)
@@ -28,7 +28,7 @@ class Simulation:
     def create_floor_graph(self, rooms):
         graph = dict()
         for room in rooms:
-            graph[room.room.id] = room.room.connected_to
+            graph[room.id] = room.connected_to
         g = nx.DiGraph()
         g.add_nodes_from(graph.keys())
         for k, v in graph.items():
@@ -55,27 +55,27 @@ class Simulation:
             if len(path) < 2:
                 self.people_paths.remove(path)
             else:
-                room1 = self.floor.get_room_simulation(path[0])
-                room2 = self.floor.get_room_simulation(path[1])
+                room1 = self.floor.get_room(path[0])
+                room2 = self.floor.get_room(path[1])
                 model.model.move_person(room1, room2)
                 path.pop(0)
 
     def find_nearest_cleaner(self, room: str):
         nearest_rooms = list(nx.bfs_tree(self.graph, room))  # TODO maybe make this field in Room class
         for room2 in nearest_rooms:
-            room3 = self.floor.get_room_simulation(room2)
+            room3 = self.floor.get_room(room2)
             if room3.cleaners:
                 cleaner = room3.prepare_cleaner_to_move()
                 if cleaner:
                     path = self.find_shortest_path(room2, room)
-                    cleaner.path = [self.floor.get_room_simulation(room) for room in path]
+                    cleaner.path = [self.floor.get_room(room) for room in path]
                     return cleaner
         return None
 
     def add_cleaner(self, room: str):
-        room = self.floor.get_room_simulation(room)
+        room = self.floor.get_room(room)
         if room:
-            cleaner = Cleaner(room.room.id)
+            cleaner = Cleaner(room.id)
             room.cleaners.append(cleaner)
             self.cleaners.append(cleaner)
 
@@ -89,10 +89,10 @@ class Simulation:
     def calculate_people_movement(self, rooms):
         room = random.choice([room for room in rooms if room.people > 0])
         for i in range(random.randint(2, 4)):
-            path = self.find_shortest_path(room.room.id, 'stairway_1')
+            path = self.find_shortest_path(room.id, 'stairway_1')
             if path:
                 self.people_paths.append(path)
-            path = self.find_shortest_path(room.room.id, 'tl')
+            path = self.find_shortest_path(room.id, 'tl')
             if path:
                 self.people_paths.append(path)
 
@@ -107,9 +107,9 @@ class Simulation:
                     room.dirt += room.people  # TODO calculate dirt
                 self.calculate_people_movement(self.rooms)
                 # TODO cleaners movement rules
-                for room in [room for room in self.rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
+                for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                     if room.get_dirt_psqm() > 5.0:
-                        cleaner = self.find_nearest_cleaner(room.room.id)
+                        cleaner = self.find_nearest_cleaner(room.id)
                         if cleaner:
                             room.cleaner_is_requested = True
                 self.move_cleaners()
@@ -121,7 +121,7 @@ class Simulation:
                 values = dict()
                 for room in self.rooms:
                     # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - d
-                    values[room.room.id] = [len(room.cleaners), len(room.moving_cleaners), len(room.busy_cleaners), room.people,
+                    values[room.id] = [len(room.cleaners), len(room.moving_cleaners), len(room.busy_cleaners), room.people,
                                             round(room.get_dirt_psqm(), 2)]
                 simulation_save.append(values)
                 values = json.dumps(values)

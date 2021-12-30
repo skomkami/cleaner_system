@@ -29,6 +29,21 @@ class Room:
     room_center_y = 0
     width: int
     height: int
+    cleaner_is_requested = False
+    people = 5
+    dirt = 0
+
+    def __init__(self, id, room_type, connected_to, pos_x, pos_y, width, height):
+        self.id = id
+        self.room_type = RoomType(room_type)
+        self.connected_to = connected_to
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.width = width
+        self.height = height
+        self.cleaners = []
+        self.moving_cleaners = []
+        self.busy_cleaners = []
 
     def surface(self):
         return self.width * self.height
@@ -39,22 +54,8 @@ class Room:
     def end_y(self):
         return self.pos_y+self.height
 
-
-class RoomSimulation:
-
-    room: Room
-    cleaner_is_requested = False
-    people = 5
-    dirt = 0
-
-    def __init__(self, room):
-        self.room = room
-        self.cleaners = []
-        self.moving_cleaners = []
-        self.busy_cleaners = []
-
     def get_dirt_psqm(self):
-        return self.dirt/self.room.surface()
+        return self.dirt/self.surface()
 
     def clean(self):
         self.dirt = max(0, self.dirt - 4 * len(self.busy_cleaners))
@@ -73,6 +74,7 @@ class RoomSimulation:
         self.busy_cleaners = []
         self.cleaner_is_requested = False
 
+
 @dataclass
 class Floor:
     level_no: int
@@ -80,9 +82,6 @@ class Floor:
 
     def get_room(self, rid: str):
         return next((room for room in self.rooms if room.id == rid), None)
-
-    def get_room_simulation(self, rid: str):
-        return next((room for room in self.room_simulations if room.room.id == rid), None)
 
     def get_max_room_surface(self):
         return max(map(lambda r: r.surface(), self.rooms))
@@ -114,11 +113,11 @@ class Cleaner:
     def __init__(self, room):
         self.room = room
 
-    def __move_cleaner(self, room1: RoomSimulation, room2: RoomSimulation):
+    def __move_cleaner(self, room1: Room, room2: Room):
         if self in room1.moving_cleaners:
             room1.moving_cleaners.remove(self)
             room2.moving_cleaners.append(self)
-            self.room = room2.room.id
+            self.room = room2.id
 
     def move_along_path(self):
         if not self.path:
@@ -132,6 +131,7 @@ class Cleaner:
         elif len(self.path) > 1:
             self.__move_cleaner(self.path[0], self.path[1])
             self.path.pop(0)
+
 
 def move_person(room1, room2):
     if room1.people > 0:
