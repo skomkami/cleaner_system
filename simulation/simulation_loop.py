@@ -1,8 +1,6 @@
 import random
 import networkx as nx
-import time
 import json
-import sys
 
 import model.model
 from model.model import Floor, Room, RoomType, Cleaner
@@ -20,8 +18,7 @@ class Simulation:
 
     def __init__(self, floor):
         self.floor = floor
-        self.rooms = self.floor.get_all_rooms()
-        floor.room_simulations = self.rooms
+        self.rooms = self.floor.get_all_room_simulations()
         self.drawer = SimulationDrawer(floor)
         self.graph = self.create_floor_graph(self.rooms)
 
@@ -55,25 +52,25 @@ class Simulation:
             if len(path) < 2:
                 self.people_paths.remove(path)
             else:
-                room1 = self.floor.get_room(path[0])
-                room2 = self.floor.get_room(path[1])
+                room1 = self.floor.get_room_simulation(path[0])
+                room2 = self.floor.get_room_simulation(path[1])
                 model.model.move_person(room1, room2)
                 path.pop(0)
 
     def find_nearest_cleaner(self, room: str):
         nearest_rooms = list(nx.bfs_tree(self.graph, room))  # TODO maybe make this field in Room class
         for room2 in nearest_rooms:
-            room3 = self.floor.get_room(room2)
+            room3 = self.floor.get_room_simulation(room2)
             if room3.cleaners:
                 cleaner = room3.prepare_cleaner_to_move()
                 if cleaner:
                     path = self.find_shortest_path(room2, room)
-                    cleaner.path = [self.floor.get_room(room) for room in path]
+                    cleaner.path = [self.floor.get_room_simulation(room) for room in path]
                     return cleaner
         return None
 
     def add_cleaner(self, room: str):
-        room = self.floor.get_room(room)
+        room = self.floor.get_room_simulation(room)
         if room:
             cleaner = Cleaner(room.id)
             room.cleaners.append(cleaner)

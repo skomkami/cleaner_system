@@ -15,35 +15,18 @@ class RoomType(str, Enum):
     def toJSON(self):
         return json.dumps(self, default=lambda x: x.value)
 
-
 @dataclass
 class Room:
+    # position on pygame drawing
     id: str
     room_type: RoomType
     connected_to: List[str]
-    # position on graph
     pos_x: int
     pos_y: int
-    #
-    room_center_x = 0
-    room_center_y = 0
     width: int
     height: int
-    cleaner_is_requested = False
-    people = 5
-    dirt = 0
-
-    def __init__(self, id, room_type, connected_to, pos_x, pos_y, width, height):
-        self.id = id
-        self.room_type = RoomType(room_type)
-        self.connected_to = connected_to
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.width = width
-        self.height = height
-        self.cleaners = []
-        self.moving_cleaners = []
-        self.busy_cleaners = []
+    room_center_x = 0
+    room_center_y = 0
 
     def surface(self):
         return self.width * self.height
@@ -54,8 +37,27 @@ class Room:
     def end_y(self):
         return self.pos_y+self.height
 
+@dataclass
+class RoomSimulation:
+    id: str
+    room_type: RoomType
+    connected_to: List[str]
+    cleaner_is_requested = False
+    people = 5
+    dirt = 0
+    surface: int
+
+    def __init__(self, id, room_type, connected_to, width, height):
+        self.id = id
+        self.room_type = RoomType(room_type)
+        self.connected_to = connected_to
+        self.surface = width * height
+        self.cleaners = []
+        self.moving_cleaners = []
+        self.busy_cleaners = []
+
     def get_dirt_psqm(self):
-        return self.dirt/self.surface()
+        return self.dirt / self.surface
 
     def clean(self):
         self.dirt = max(0, self.dirt - 4 * len(self.busy_cleaners))
@@ -79,15 +81,27 @@ class Room:
 class Floor:
     level_no: int
     rooms: List[Room]
+    room_simulations: List[RoomSimulation]
+
+    def __init__(self, level_no, rooms):
+        self.level_no = level_no
+        self.rooms = [room[0] for room in rooms]
+        self.room_simulations = [room[1] for room in rooms]
 
     def get_room(self, rid: str):
         return next((room for room in self.rooms if room.id == rid), None)
+
+    def get_room_simulation(self, rid: str):
+        return next((room for room in self.room_simulations if room.id == rid), None)
 
     def get_max_room_surface(self):
         return max(map(lambda r: r.surface(), self.rooms))
 
     def get_all_rooms(self):
         return self.rooms
+
+    def get_all_room_simulations(self):
+        return self.room_simulations
 
     def get_blocks_x(self):
         return max(map(lambda r: r.end_x(), self.rooms))
