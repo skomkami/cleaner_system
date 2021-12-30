@@ -75,7 +75,7 @@ class Simulation:
     def add_cleaner(self, room: str):
         room = self.floor.get_room_simulation(room)
         if room:
-            cleaner = Cleaner(room)
+            cleaner = Cleaner(room.room.id)
             room.cleaners.append(cleaner)
             self.cleaners.append(cleaner)
 

@@ -69,8 +69,9 @@ class RoomSimulation:
             return None
 
     def free_cleaners(self):
-        for cleaner in self.busy_cleaners:
-            cleaner.free_cleaner()
+        self.cleaners = self.busy_cleaners
+        self.busy_cleaners = []
+        self.cleaner_is_requested = False
 
 @dataclass
 class Floor:
@@ -106,7 +107,7 @@ class CleanerStatus(str, Enum):
 
 
 class Cleaner:
-    room: RoomSimulation
+    room: str
     status: CleanerStatus.Free
     path = []
 
@@ -117,26 +118,20 @@ class Cleaner:
         if self in room1.moving_cleaners:
             room1.moving_cleaners.remove(self)
             room2.moving_cleaners.append(self)
-            self.room = room2
-
+            self.room = room2.room.id
 
     def move_along_path(self):
         if not self.path:
             return
         if len(self.path) == 1:
-            if self.room.moving_cleaners:
-                self.room.moving_cleaners.remove(self)
-                self.room.busy_cleaners.append(self)
+            if self.path[0].moving_cleaners:
+                self.path[0].moving_cleaners.remove(self)
+                self.path[0].busy_cleaners.append(self)
                 self.status = CleanerStatus.Busy
                 self.path = []
         elif len(self.path) > 1:
             self.__move_cleaner(self.path[0], self.path[1])
             self.path.pop(0)
-
-    def free_cleaner(self):
-        self.room.cleaners = self.room.busy_cleaners
-        self.room.busy_cleaners = []
-        self.room.cleaner_is_requested = False
 
 def move_person(room1, room2):
     if room1.people > 0:
