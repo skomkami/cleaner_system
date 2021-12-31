@@ -1,4 +1,4 @@
-from model.model import Floor, Room
+from model.model import Floor, Room, RoomSimulation
 import json
 
 def dumper(obj):
@@ -10,7 +10,8 @@ def dumper(obj):
 def loader(obj):
     if 'level_no' in obj:
         return Floor(obj['level_no'],obj['rooms'])
-    return Room(obj['id'],obj['room_type'],obj['connected_to'],obj['pos_x'],obj['pos_y'],obj['width'],obj['height'])
+    return [Room(obj['id'],obj['room_type'],obj['connected_to'],obj['pos_x'],obj['pos_y'],obj['width'],obj['height']),
+            RoomSimulation(obj['id'],obj['room_type'],obj['connected_to'], obj['width'], obj['height'])]
 
 def fromFile(filePath):
     with open(filePath,'r', encoding='utf-8') as f:
