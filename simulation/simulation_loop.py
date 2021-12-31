@@ -1,9 +1,11 @@
 import random
 import networkx as nx
+import time
 import json
+import sys
 
 import model.model
-from model.model import Floor, Room, RoomType, Cleaner
+from model.model import Floor, RoomSimulation, RoomType, Cleaner
 from drawer.simulation_drawer import SimulationDrawer
 
 
@@ -18,14 +20,15 @@ class Simulation:
 
     def __init__(self, floor):
         self.floor = floor
-        self.rooms = self.floor.get_all_room_simulations()
+        self.rooms = [RoomSimulation(room) for room in self.floor.get_all_rooms()]
+        floor.room_simulations = self.rooms
         self.drawer = SimulationDrawer(floor)
         self.graph = self.create_floor_graph(self.rooms)
 
     def create_floor_graph(self, rooms):
         graph = dict()
         for room in rooms:
-            graph[room.id] = room.connected_to
+            graph[room.room.id] = room.room.connected_to
         g = nx.DiGraph()
         g.add_nodes_from(graph.keys())
         for k, v in graph.items():
@@ -72,7 +75,7 @@ class Simulation:
     def add_cleaner(self, room: str):
         room = self.floor.get_room_simulation(room)
         if room:
-            cleaner = Cleaner(room.id)
+            cleaner = Cleaner(room)
             room.cleaners.append(cleaner)
             self.cleaners.append(cleaner)
 
@@ -86,10 +89,10 @@ class Simulation:
     def calculate_people_movement(self, rooms):
         room = random.choice([room for room in rooms if room.people > 0])
         for i in range(random.randint(2, 4)):
-            path = self.find_shortest_path(room.id, 'stairway_1')
+            path = self.find_shortest_path(room.room.id, 'stairway_1')
             if path:
                 self.people_paths.append(path)
-            path = self.find_shortest_path(room.id, 'tl')
+            path = self.find_shortest_path(room.room.id, 'tl')
             if path:
                 self.people_paths.append(path)
 
@@ -104,9 +107,9 @@ class Simulation:
                     room.dirt += room.people  # TODO calculate dirt
                 self.calculate_people_movement(self.rooms)
                 # TODO cleaners movement rules
-                for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
+                for room in [room for room in self.rooms if room.people == 0 and room.room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                     if room.get_dirt_psqm() > 5.0:
-                        cleaner = self.find_nearest_cleaner(room.id)
+                        cleaner = self.find_nearest_cleaner(room.room.id)
                         if cleaner:
                             room.cleaner_is_requested = True
                 self.move_cleaners()
@@ -118,7 +121,7 @@ class Simulation:
                 values = dict()
                 for room in self.rooms:
                     # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - d
-                    values[room.id] = [len(room.cleaners), len(room.moving_cleaners), len(room.busy_cleaners), room.people,
+                    values[room.room.id] = [len(room.cleaners), len(room.moving_cleaners), len(room.busy_cleaners), room.people,
                                             round(room.get_dirt_psqm(), 2)]
                 simulation_save.append(values)
                 values = json.dumps(values)

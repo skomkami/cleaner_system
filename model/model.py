@@ -15,18 +15,20 @@ class RoomType(str, Enum):
     def toJSON(self):
         return json.dumps(self, default=lambda x: x.value)
 
+
 @dataclass
 class Room:
-    # position on pygame drawing
     id: str
     room_type: RoomType
     connected_to: List[str]
+    # position on graph
     pos_x: int
     pos_y: int
-    width: int
-    height: int
+    #
     room_center_x = 0
     room_center_y = 0
+    width: int
+    height: int
 
     def surface(self):
         return self.width * self.height
@@ -37,27 +39,22 @@ class Room:
     def end_y(self):
         return self.pos_y+self.height
 
-@dataclass
+
 class RoomSimulation:
-    id: str
-    room_type: RoomType
-    connected_to: List[str]
+
+    room: Room
     cleaner_is_requested = False
     people = 5
     dirt = 0
-    surface: int
 
-    def __init__(self, id, room_type, connected_to, width, height):
-        self.id = id
-        self.room_type = RoomType(room_type)
-        self.connected_to = connected_to
-        self.surface = width * height
+    def __init__(self, room):
+        self.room = room
         self.cleaners = []
         self.moving_cleaners = []
         self.busy_cleaners = []
 
     def get_dirt_psqm(self):
-        return self.dirt / self.surface
+        return self.dirt/self.room.surface()
 
     def clean(self):
         self.dirt = max(0, self.dirt - 4 * len(self.busy_cleaners))
@@ -72,36 +69,25 @@ class RoomSimulation:
             return None
 
     def free_cleaners(self):
-        self.cleaners = self.busy_cleaners
-        self.busy_cleaners = []
-        self.cleaner_is_requested = False
-
+        for cleaner in self.busy_cleaners:
+            cleaner.free_cleaner()
 
 @dataclass
 class Floor:
     level_no: int
     rooms: List[Room]
-    room_simulations: List[RoomSimulation]
-
-    def __init__(self, level_no, rooms):
-        self.level_no = level_no
-        self.rooms = [room[0] for room in rooms]
-        self.room_simulations = [room[1] for room in rooms]
 
     def get_room(self, rid: str):
         return next((room for room in self.rooms if room.id == rid), None)
 
     def get_room_simulation(self, rid: str):
-        return next((room for room in self.room_simulations if room.id == rid), None)
+        return next((room for room in self.room_simulations if room.room.id == rid), None)
 
     def get_max_room_surface(self):
         return max(map(lambda r: r.surface(), self.rooms))
 
     def get_all_rooms(self):
         return self.rooms
-
-    def get_all_room_simulations(self):
-        return self.room_simulations
 
     def get_blocks_x(self):
         return max(map(lambda r: r.end_x(), self.rooms))
@@ -120,32 +106,37 @@ class CleanerStatus(str, Enum):
 
 
 class Cleaner:
-    room: str
+    room: RoomSimulation
     status: CleanerStatus.Free
     path = []
 
     def __init__(self, room):
         self.room = room
 
-    def __move_cleaner(self, room1: Room, room2: Room):
+    def __move_cleaner(self, room1: RoomSimulation, room2: RoomSimulation):
         if self in room1.moving_cleaners:
             room1.moving_cleaners.remove(self)
             room2.moving_cleaners.append(self)
-            self.room = room2.id
+            self.room = room2
+
 
     def move_along_path(self):
         if not self.path:
             return
         if len(self.path) == 1:
-            if self.path[0].moving_cleaners:
-                self.path[0].moving_cleaners.remove(self)
-                self.path[0].busy_cleaners.append(self)
+            if self.room.moving_cleaners:
+                self.room.moving_cleaners.remove(self)
+                self.room.busy_cleaners.append(self)
                 self.status = CleanerStatus.Busy
                 self.path = []
         elif len(self.path) > 1:
             self.__move_cleaner(self.path[0], self.path[1])
             self.path.pop(0)
 
+    def free_cleaner(self):
+        self.room.cleaners = self.room.busy_cleaners
+        self.room.busy_cleaners = []
+        self.room.cleaner_is_requested = False
 
 def move_person(room1, room2):
     if room1.people > 0:
