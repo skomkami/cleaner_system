@@ -44,7 +44,7 @@ class RoomSimulation:
     room_type: RoomType
     connected_to: List[str]
     cleaner_is_requested = False
-    people = 5
+    people = 0
     dirt = 0
     surface: int
 

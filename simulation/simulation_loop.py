@@ -1,5 +1,4 @@
 import random
-from typing import List
 import networkx as nx
 import json
 
@@ -80,15 +79,25 @@ class Simulation:
             room.cleaners.append(cleaner)
             self.cleaners.append(cleaner)
 
-    #Defines example of simulation
+    # Defines example of simulation
     def initialize_simulation(self):
         rooms_with_cleaner = ['cs2', 'hr', 'w240', '214', '218', 'wc_3', '224']
         for room in rooms_with_cleaner:
             self.add_cleaner(room)
+        for room in self.rooms:
+            if not room.room_type in [RoomType.Hall, RoomType.Toilet, RoomType.Entrance]:
+                room.people += random.randint(0, 10)
 
-    # TODO people movement simulation
+    # TODO example of people movement simulation
     def calculate_people_movement(self, rooms):
-        room = random.choice([room for room in rooms if room.people > 0])
+        for room in rooms:
+            if room.room_type == RoomType.Entrance:
+                room.people = 0
+        possibilities = [room for room in rooms if (room.room_type not in [RoomType.Entrance, RoomType.Toilet,
+                                                                           RoomType.Hall] and room.people > 0)]
+        if not possibilities:
+            return
+        room = random.choice(possibilities)
         for i in range(random.randint(2, 4)):
             path = self.find_shortest_path(room.id, 'stairway_1')
             if path:
