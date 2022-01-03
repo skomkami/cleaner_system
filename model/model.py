@@ -62,8 +62,11 @@ class RoomSimulation:
     def clean(self):
         self.dirt = max(0, self.dirt - 4 * len(self.busy_cleaners))
     
-    def calculate_dirt(self):
-        pass
+    def spawn_dirt(self, weather_dirt_factor: float):
+        if self.room_type == RoomType.Entrance:
+            new_dirt = self.people * weather_dirt_factor
+            self.dirt += new_dirt
+            print("Spawning dirt in room", self.id, "in amount", new_dirt)
 
     def prepare_cleaner_to_move(self):
         if self.cleaners:
@@ -149,8 +152,7 @@ class Cleaner:
             self.__move_cleaner(self.path[0], self.path[1])
             self.path.pop(0)
 
-
-def move_person(room1, room2):
+def move_person(room1: RoomSimulation, room2: RoomSimulation):
     if room1.people > 0:
         room1.people -= 1
         room2.people += 1

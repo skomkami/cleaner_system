@@ -17,11 +17,13 @@ class Simulation:
     graph = None
     drawer: SimulationDrawer
     running = False
+    weather_dirt_factor: float
 
     def __init__(self, floor):
         self.floor = floor
         self.rooms = self.floor.get_all_room_simulations()
         self.drawer = SimulationDrawer(floor)
+        self.weather_dirt_factor = 0.1
         self.graph = self.create_floor_graph(self.rooms)
 
     def create_floor_graph(self, rooms):
@@ -103,7 +105,7 @@ class Simulation:
         while self.running:
             try:
                 for room in self.rooms:
-                    room.calculate_dirt()
+                    room.spawn_dirt(self.weather_dirt_factor)
                 self.calculate_people_movement(self.rooms)
                 # TODO cleaners movement rules
                 for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
