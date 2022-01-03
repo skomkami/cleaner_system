@@ -13,7 +13,11 @@ else:
     config_path = os.path.join(cwd, "maps", config_file_name)
 floor_map = fromFile(config_path)
 
-simulation = Simulation(floor_map)
-simulation.run_simulation()
-# simulation = SimulationDrawer(floor0)
-# simulation.draw_from_file('output/output.json')
+if len(sys.argv) > 2:
+    print('drawing from source')
+    simulation = SimulationDrawer(floor_map)
+    simulation.draw_from_file('output/output.json')
+else:
+    print('running simulation')
+    simulation = Simulation(floor_map)
+    simulation.run_simulation()

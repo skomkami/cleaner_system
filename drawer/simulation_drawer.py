@@ -109,7 +109,3 @@ class SimulationDrawer:
                 pygame.display.quit()
                 pygame.quit()
                 self.running = False
-                sys.exit(0)
-
-
-

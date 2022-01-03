@@ -1,6 +1,7 @@
 import random
 import networkx as nx
 import json
+import sys
 
 import model.model
 from model.model import Floor, RoomSimulation, RoomType, Cleaner
@@ -51,7 +52,6 @@ class Simulation:
 
     def move_people(self):
         for path in self.people_paths:
-            print(path)
             if len(path) < 2:
                 path.pop(0)
                 self.people_paths.remove(path)
@@ -60,7 +60,6 @@ class Simulation:
                 room2 = self.floor.get_room_simulation(path[1])
                 model.model.move_person(room1, room2)
                 path.pop(0)
-        print('')
 
     def find_nearest_cleaner(self, room: str):
         nearest_rooms = list(nx.bfs_tree(self.graph, room))  # TODO maybe make this field in Room class
@@ -91,6 +90,8 @@ class Simulation:
             if not room.room_type in [RoomType.Hall, RoomType.Toilet, RoomType.Entrance]:
                 room.people += random.randint(0, 10)
         '''
+        source = self.floor.get_room_simulation('stairway_3')
+        source.people = 5
 
     def calculate_people_movement(self, rooms):
         if self.movement_counter > 0:
@@ -134,7 +135,6 @@ class Simulation:
         step = 0
         simulation_save = []
         source = self.floor.get_room_simulation('stairway_3')
-        source.people = 5
         while self.running:
             try:
                 for room in self.rooms:
@@ -142,7 +142,7 @@ class Simulation:
                 self.calculate_people_movement(self.rooms)
                 # TODO cleaners movement rules
                 for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
-                    if room.get_dirt_psqm() > 5.0:
+                    if room.get_dirt_psqm() > 2.0:
                         cleaner = self.find_nearest_cleaner(room.id)
                         if cleaner:
                             room.cleaner_is_requested = True
@@ -153,6 +153,9 @@ class Simulation:
                     if room.dirt == 0 and len(room.busy_cleaners) > 0:
                         room.free_cleaners()
                 values = dict()
+                source.people = 5
+                if self.movement_counter <=0:
+                    source.people = 0
                 for room in self.rooms:
                     # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - d
                     values[room.id] = [len(room.cleaners), len(room.moving_cleaners), len(room.busy_cleaners), room.people,
@@ -162,14 +165,11 @@ class Simulation:
                 if self.drawer:
                     self.drawer.draw_from_simulation(values)
                 step += 1
-                source.people = 5
             except KeyboardInterrupt:
                 # TODO better file write management
                 # TODO better exit management
-                '''
                 output = dict()
                 output['steps'] = simulation_save
                 with open('output/output.json', 'w+') as outfile:
                     json.dump(output, outfile)
                 sys.exit(0)
-                '''

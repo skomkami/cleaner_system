@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List
 import json
 
-DIRT_MOVEMENT_FACTOR = 0.6
+DIRT_MOVEMENT_FACTOR = 0.1
 
 class RoomType(str, Enum):
     LectureHall = 'LectureHall'
@@ -72,7 +72,7 @@ class RoomSimulation:
     def move_dirt_in(self, people_count: int, people_origin_dirtiness: float, id: str):
         new_dirt = DIRT_MOVEMENT_FACTOR *  people_count * people_origin_dirtiness
         # print("Moves dirt to room", self.id, "from", id, "new_dirt", new_dirt)
-        self.dirt = min(self.dirt + new_dirt, 15)
+        self.dirt = min(self.dirt + new_dirt, 500)
 
 
     def prepare_cleaner_to_move(self):
@@ -140,7 +140,7 @@ class Cleaner:
     def __init__(self, room):
         self.room = room
 
-    def __move_cleaner(self, room1: Room, room2: Room):
+    def __move_cleaner(self, room1: RoomSimulation, room2: RoomSimulation):
         if self in room1.moving_cleaners:
             room1.moving_cleaners.remove(self)
             room2.moving_cleaners.append(self)
