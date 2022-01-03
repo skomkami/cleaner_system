@@ -61,6 +61,9 @@ class RoomSimulation:
 
     def clean(self):
         self.dirt = max(0, self.dirt - 4 * len(self.busy_cleaners))
+    
+    def calculate_dirt(self):
+        pass
 
     def prepare_cleaner_to_move(self):
         if self.cleaners:

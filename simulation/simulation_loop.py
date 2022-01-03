@@ -1,15 +1,17 @@
 import random
+from typing import List
 import networkx as nx
 import json
 
 import model.model
-from model.model import Floor, Room, RoomType, Cleaner
+from model.model import Floor, Room, RoomSimulation, RoomType, Cleaner
 from drawer.simulation_drawer import SimulationDrawer
 
 
 class Simulation:
 
     floor: Floor
+    rooms: List[RoomSimulation]
     cleaners = []
     people_paths = []
     graph = None
@@ -101,7 +103,7 @@ class Simulation:
         while self.running:
             try:
                 for room in self.rooms:
-                    room.dirt += room.people  # TODO calculate dirt
+                    room.calculate_dirt()
                 self.calculate_people_movement(self.rooms)
                 # TODO cleaners movement rules
                 for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
