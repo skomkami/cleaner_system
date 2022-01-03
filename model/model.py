@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List
 import json
 
-DIRT_MOVEMENT_FACTOR = 0.6
+DIRT_MOVEMENT_FACTOR = 0.1
 
 class RoomType(str, Enum):
     LectureHall = 'LectureHall'

@@ -18,6 +18,7 @@ class Simulation:
     drawer: SimulationDrawer
     running = False
     weather_dirt_factor: float
+    movement_counter = 20
 
     def __init__(self, floor):
         self.floor = floor
@@ -50,16 +51,16 @@ class Simulation:
 
     def move_people(self):
         for path in self.people_paths:
-            if not path:
-                self.people_paths.remove(path)
-                continue
+            print(path)
             if len(path) < 2:
+                path.pop(0)
                 self.people_paths.remove(path)
             else:
                 room1 = self.floor.get_room_simulation(path[0])
                 room2 = self.floor.get_room_simulation(path[1])
                 model.model.move_person(room1, room2)
                 path.pop(0)
+        print('')
 
     def find_nearest_cleaner(self, room: str):
         nearest_rooms = list(nx.bfs_tree(self.graph, room))  # TODO maybe make this field in Room class
@@ -85,12 +86,32 @@ class Simulation:
         rooms_with_cleaner = ['cs2', 'hr', 'w240', '214', '218', 'wc_3', '224']
         for room in rooms_with_cleaner:
             self.add_cleaner(room)
+        '''
         for room in self.rooms:
             if not room.room_type in [RoomType.Hall, RoomType.Toilet, RoomType.Entrance]:
                 room.people += random.randint(0, 10)
+        '''
 
-    # TODO example of people movement simulation
     def calculate_people_movement(self, rooms):
+        if self.movement_counter > 0:
+            self.movement_counter -= 1
+            self.add_people()
+        elif self.movement_counter > -10:
+            self.movement_counter -= 1
+        else:
+            self.remove_people(rooms)
+
+    def add_people(self):
+        source = self.floor.get_room_simulation('stairway_3')
+        possibilities = [room for room in self.rooms if (room.room_type not in [RoomType.Entrance, RoomType.Toilet,
+                                                                           RoomType.Hall])]
+        destination = random.choice(possibilities)
+        for i in range(5):
+            path = self.find_shortest_path(source.id, destination.id)
+            if path:
+                self.people_paths.append(path)
+
+    def remove_people(self, rooms):
         for room in rooms:
             if room.room_type == RoomType.Entrance:
                 room.people = 0
@@ -112,6 +133,8 @@ class Simulation:
         self.running = True
         step = 0
         simulation_save = []
+        source = self.floor.get_room_simulation('stairway_3')
+        source.people = 5
         while self.running:
             try:
                 for room in self.rooms:
@@ -139,6 +162,7 @@ class Simulation:
                 if self.drawer:
                     self.drawer.draw_from_simulation(values)
                 step += 1
+                source.people = 5
             except KeyboardInterrupt:
                 # TODO better file write management
                 # TODO better exit management
