@@ -3,8 +3,9 @@ import networkx as nx
 import json
 
 import model.model
-from model.model import Floor, Room, RoomSimulation, RoomType, Cleaner
+from model.model import Floor, RoomSimulation, RoomType, Cleaner
 from drawer.simulation_drawer import SimulationDrawer
+from typing import List
 
 
 class Simulation:
