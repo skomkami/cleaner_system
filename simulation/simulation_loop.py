@@ -2,6 +2,7 @@ import random
 import networkx as nx
 import json
 import sys
+import time
 
 import model.model
 from model.model import Floor, RoomSimulation, RoomType, Cleaner
@@ -16,17 +17,22 @@ class Simulation:
     cleaners = []
     people_paths = []
     graph = None
-    drawer: SimulationDrawer
+    drawer: SimulationDrawer = None
     running = False
     weather_dirt_factor: float
     movement_counter = 20
+    headless = False
 
-    def __init__(self, floor):
+    def __init__(self, floor, options):
         self.floor = floor
         self.rooms = self.floor.get_all_room_simulations()
-        self.drawer = SimulationDrawer(floor)
         self.weather_dirt_factor = 0.1
         self.graph = self.create_floor_graph(self.rooms)
+        if '--headless' in options:
+            self.headless = True
+            print('running in headless mode')
+        else:
+            self.drawer = SimulationDrawer(floor)
 
     def create_floor_graph(self, rooms):
         graph = dict()
@@ -137,6 +143,7 @@ class Simulation:
         source = self.floor.get_room_simulation('stairway_3')
         while self.running:
             try:
+                running = True
                 for room in self.rooms:
                     room.spawn_dirt(self.weather_dirt_factor)
                 self.calculate_people_movement(self.rooms)
@@ -162,12 +169,15 @@ class Simulation:
                                             round(room.get_dirt_psqm(), 2)]
                 simulation_save.append(values)
                 values = json.dumps(values)
-                if self.drawer:
-                    self.drawer.draw_from_simulation(values)
                 step += 1
+                if self.drawer and not self.headless:
+                    running = self.drawer.draw_from_simulation(values)
+                else:
+                    print(step)
+                    time.sleep(0.5)
+                if not running:
+                    raise KeyboardInterrupt
             except KeyboardInterrupt:
-                # TODO better file write management
-                # TODO better exit management
                 output = dict()
                 output['steps'] = simulation_save
                 with open('output/output.json', 'w+') as outfile:
