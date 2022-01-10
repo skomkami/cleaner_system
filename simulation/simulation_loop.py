@@ -110,18 +110,17 @@ class Simulation:
 
     def add_people(self):
         source = self.floor.get_room_simulation('stairway_3')
+        source.people = 5
         possibilities = [room for room in self.rooms if (room.room_type not in [RoomType.Entrance, RoomType.Toilet,
                                                                            RoomType.Hall])]
         destination = random.choice(possibilities)
+        source.spawn_dirt(self.weather_dirt_factor)
         for i in range(5):
             path = self.find_shortest_path(source.id, destination.id)
             if path:
                 self.people_paths.append(path)
 
     def remove_people(self, rooms):
-        for room in rooms:
-            if room.room_type == RoomType.Entrance:
-                room.people = 0
         possibilities = [room for room in rooms if (room.room_type not in [RoomType.Entrance, RoomType.Toilet,
                                                                            RoomType.Hall] and room.people > 0)]
         if not possibilities:
@@ -145,8 +144,8 @@ class Simulation:
             try:
                 running = True
                 for room in self.rooms:
-                    room.spawn_dirt(self.weather_dirt_factor)
-                self.calculate_people_movement(self.rooms)
+                    if room.id == 'stairway_1':
+                        room.people = 0
                 # TODO cleaners movement rules
                 for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                     if room.get_dirt_psqm() > 2.0:
@@ -155,14 +154,12 @@ class Simulation:
                             room.cleaner_is_requested = True
                 self.move_cleaners()
                 self.move_people()
+                self.calculate_people_movement(self.rooms)
                 for room in self.rooms:
                     room.clean()
                     if room.dirt == 0 and len(room.busy_cleaners) > 0:
                         room.free_cleaners()
                 values = dict()
-                source.people = 5
-                if self.movement_counter <=0:
-                    source.people = 0
                 for room in self.rooms:
                     # 0 - cleaners, 1 - moving cleaners, 2 - busy cleaners, 3 - people, 4 - d
                     values[room.id] = [len(room.cleaners), len(room.moving_cleaners), len(room.busy_cleaners), room.people,

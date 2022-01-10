@@ -66,7 +66,7 @@ class RoomSimulation:
     def spawn_dirt(self, weather_dirt_factor: float):
         if self.room_type == RoomType.Entrance:
             new_dirt = self.people * weather_dirt_factor
-            self.dirt = min(self.dirt + new_dirt, 15)
+            self.dirt = min(self.dirt + new_dirt, 500)
             # print("Spawning dirt in room", self.id, "in amount", new_dirt)
 
     def move_dirt_in(self, people_count: int, people_origin_dirtiness: float, id: str):
