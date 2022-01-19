@@ -3,7 +3,7 @@
   "rooms": [
     {
       "id": "hl",
-      "room_type": "Hall",
+      "room_type": "Entrance",
       "connected_to": [
         "cs1"
       ],

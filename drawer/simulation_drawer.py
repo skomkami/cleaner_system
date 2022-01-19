@@ -1,6 +1,5 @@
 import pygame
 import json
-import sys
 
 from drawer.draw_floor import draw_floor
 from drawer.legend_drawer import LegendDrawer
@@ -15,7 +14,6 @@ class SimulationDrawer:
     rect_size = 25
     img_height = 800
     img_width = 1500
-    screen = pygame.display.set_mode((img_width, img_height))
     color_red = (255, 0, 0)
     color_blue = (0, 0, 255)
     color_green = (0, 255, 0)
@@ -26,6 +24,7 @@ class SimulationDrawer:
     timer_width = 250
 
     def __init__(self, floor):
+        self.screen = pygame.display.set_mode((self.img_width, self.img_height))
         pygame.init()
         self.floor = floor
         self.room_drawer = RoomDrawer(
@@ -55,7 +54,7 @@ class SimulationDrawer:
 
     def draw_from_simulation(self, frame):
         frame = json.loads(frame)
-        self.draw_frame(frame)
+        return self.draw_frame(frame)
 
     def draw_frame(self, frame):
         if not self.running:
@@ -109,7 +108,5 @@ class SimulationDrawer:
                 pygame.display.quit()
                 pygame.quit()
                 self.running = False
-                sys.exit(0)
-
-
-
+                return False
+        return True

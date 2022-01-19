@@ -11,9 +11,23 @@ if len(sys.argv) > 1:
 else:
     config_file_name = "floor0.json"
     config_path = os.path.join(cwd, "maps", config_file_name)
-floor0 = fromFile(config_path)
+floor_map = fromFile(config_path)
+options = []
 
-simulation = Simulation(floor0)
+if len(sys.argv) > 2:
+    option = sys.argv[2]
+    if option in ['--read']:
+        if len(sys.argv) > 3:
+            source_file_name = sys.argv[3]
+            source_path = os.path.join(cwd, source_file_name)
+            print('drawing from source')
+            simulation = SimulationDrawer(floor_map)
+            simulation.draw_from_file(source_path)
+        else:
+            print('specify path to source file')
+    if option in ['--headless']:
+        options.append(option)
+
+print('running simulation')
+simulation = Simulation(floor_map, options)
 simulation.run_simulation()
-# simulation = SimulationDrawer(floor0)
-# simulation.draw_from_file('output/output.json')
