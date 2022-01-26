@@ -1,6 +1,7 @@
 from enum import IntEnum
 import re
 
+
 class WeekDay(IntEnum):
     Mon = 1
     Tue = 2
@@ -9,6 +10,9 @@ class WeekDay(IntEnum):
     Fri = 5
     Sat = 6
     Sun = 7
+
+    def __str__(self):
+        return self.name
 
 
 class Time:
