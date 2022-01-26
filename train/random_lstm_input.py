@@ -31,7 +31,7 @@ class RandomLstmInput:
                         else:
                             dirt_delta_in_room = float(decimal.Decimal(random.randrange(50, 200)) / 1000)
                         rooms_dirt.append(dirt_delta_in_room)
-                    rooms_dirt_str = ' '.join([str(dirt) for dirt in rooms_dirt])
+                    rooms_dirt_str = ','.join([str(dirt) for dirt in rooms_dirt])
                     f.write("{},{}\n".format(day_time, rooms_dirt_str))
                     curr_time += self.time_step
 

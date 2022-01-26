@@ -14,6 +14,9 @@ class LstmState:
         self.current_time_window = 0
         self.random_dirt_deltas = random_dirt_deltas
 
+    def reset(self):
+        self.sum_cost = 0
+
     def update_loss(self, predicted: List[int]):
         last_current_positions = zip(self.last_positions, predicted)
         move_cost = sum(map(lambda x: 0 if x[0] == x[1] else 1, last_current_positions))
