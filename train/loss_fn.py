@@ -1,7 +1,7 @@
 from typing import List
 
 
-class LstmState:
+class CostCalculator:
     def __init__(self, random_dirt_deltas: List[List[float]]):
         # amount of dirt one cleaner is removing in one time window
         self.window_cleaning = 0.3
@@ -52,10 +52,10 @@ random_dirt_deltas = [
     [0.345, 0.363, 0]  # 2
 ]
 
-state = LstmState(random_dirt_deltas)
+cost_calculator = CostCalculator(random_dirt_deltas)
 
 positions = [[0], [2], [2], [2], [1], [1], [1], [0], [0], [2], [2], [2], [0], [0], [1], [2]]
 
-sum_cost = state.calc_cost(positions)
+sum_cost = cost_calculator.calc_cost(positions)
 
 print(sum_cost)
