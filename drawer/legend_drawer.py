@@ -24,4 +24,4 @@ class LegendDrawer(Drawer):
             col = idx // row_items
             x = col * col_width + 30
             self.draw_rect(x, y, 30, 30, get_color_for_room(r_tpe))
-            self.draw_text(self.reg_font, x + 40, y + 8, text=r_tpe.t, color=white)
+            self.draw_text(self.reg_font, x + 40, y + 8, text=r_tpe.value, color=white)
