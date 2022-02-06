@@ -3,6 +3,7 @@ import networkx as nx
 import json
 import sys
 import time
+import math
 
 import model.model
 from model.model import Floor, RoomSimulation, RoomType, Cleaner
@@ -28,6 +29,8 @@ class Simulation:
         self.rooms = self.floor.get_all_room_simulations()
         self.weather_dirt_factor = 0.1
         self.graph = self.create_floor_graph(self.rooms)
+        self.source = None
+        self.destination = None
         if '--headless' in options:
             self.headless = True
             print('running in headless mode')
@@ -88,16 +91,21 @@ class Simulation:
 
     # Defines example of simulation
     def initialize_simulation(self):
-        rooms_with_cleaner = ['cs2', 'hr', 'w240', '214', '218', 'wc_3', '224']
+        cleaner_possibilities = [room.id for room in self.rooms if (room.room_type in [RoomType.LaboratoryRoom,
+                                                                 RoomType.LectureHall, RoomType.Administration])]
+        cleaner_amount = math.ceil(len(cleaner_possibilities)/5)
+        rooms_with_cleaner = random.sample(cleaner_possibilities, cleaner_amount)
+
         for room in rooms_with_cleaner:
             self.add_cleaner(room)
-        '''
-        for room in self.rooms:
-            if not room.room_type in [RoomType.Hall, RoomType.Toilet, RoomType.Entrance]:
-                room.people += random.randint(0, 10)
-        '''
-        source = self.floor.get_room_simulation('stairway_3')
-        source.people = 5
+        source_possibilities = [room.id for room in self.rooms if (room.room_type in [RoomType.Entrance])]
+        source = random.choice(source_possibilities)
+        if len(source_possibilities) > 1:
+            source_possibilities.remove(source)
+        self.source = self.floor.get_room_simulation(source)
+        destination = random.choice(source_possibilities)
+        self.destination = self.floor.get_room_simulation(destination)
+        self.source.people = 5
 
     def calculate_people_movement(self, rooms):
         if self.movement_counter > 0:
@@ -109,14 +117,13 @@ class Simulation:
             self.remove_people(rooms)
 
     def add_people(self):
-        source = self.floor.get_room_simulation('stairway_3')
-        source.people = 5
+        self.source.people = 5
         possibilities = [room for room in self.rooms if (room.room_type not in [RoomType.Entrance, RoomType.Toilet,
                                                                            RoomType.Hall])]
         destination = random.choice(possibilities)
-        source.spawn_dirt(self.weather_dirt_factor)
+        self.source.spawn_dirt(self.weather_dirt_factor)
         for i in range(5):
-            path = self.find_shortest_path(source.id, destination.id)
+            path = self.find_shortest_path(self.source.id, destination.id)
             if path:
                 self.people_paths.append(path)
 
@@ -127,25 +134,22 @@ class Simulation:
             return
         room = random.choice(possibilities)
         for i in range(random.randint(2, 4)):
-            path = self.find_shortest_path(room.id, 'stairway_1')
+            path = self.find_shortest_path(room.id, self.destination.id)
             if path:
                 self.people_paths.append(path)
-            path = self.find_shortest_path(room.id, 'tl')
-            if path:
-                self.people_paths.append(path)
+            # path = self.find_shortest_path(room.id, 'tl')
+            # if path:
+            #    self.people_paths.append(path)
 
     def run_simulation(self):
         self.initialize_simulation()
         self.running = True
         step = 0
         simulation_save = []
-        source = self.floor.get_room_simulation('stairway_3')
+        #prev_dest_people = 0
         while self.running:
             try:
                 running = True
-                for room in self.rooms:
-                    if room.id == 'stairway_1':
-                        room.people = 0
                 # TODO cleaners movement rules
                 for room in [room for room in self.rooms if room.people == 0 and room.room_type != RoomType.Hall and not room.cleaner_is_requested]:
                     if room.get_dirt_psqm() > 2.0:
@@ -167,11 +171,14 @@ class Simulation:
                 simulation_save.append(values)
                 values = json.dumps(values)
                 step += 1
+                #prev_dest_people = self.destination.people
                 if self.drawer and not self.headless:
                     running = self.drawer.draw_from_simulation(values)
                 else:
                     print(step)
                     time.sleep(0.5)
+                if self.movement_counter < 0:
+                    self.destination.people = 0
                 if not running:
                     raise KeyboardInterrupt
             except KeyboardInterrupt:
