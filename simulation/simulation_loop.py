@@ -184,6 +184,6 @@ class Simulation:
             except KeyboardInterrupt:
                 output = dict()
                 output['steps'] = simulation_save
-                with open('output/output.json', 'w+') as outfile:
+                with open('output.json', 'w+') as outfile:
                     json.dump(output, outfile)
                 sys.exit(0)
