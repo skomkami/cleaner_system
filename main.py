@@ -4,14 +4,20 @@ from model.jsonHelper import fromFile
 import os
 import sys
 
-cwd = os.getcwd()
-if len(sys.argv) > 1:
-    config_file_name = sys.argv[1]
+
+if len(sys.argv) < 2:
+    print('specify map path')
+    sys.exit(0)
+config_file_name = sys.argv[1]
+if config_file_name in ['--default']:
+    config_file_name = "maps/floor0.json"
+try:
+    cwd = os.getcwd()
     config_path = os.path.join(cwd, config_file_name)
-else:
-    config_file_name = "floor0.json"
-    config_path = os.path.join(cwd, "maps", config_file_name)
-floor_map = fromFile(config_path)
+    floor_map = fromFile(config_path)
+except FileNotFoundError:
+    print('specify valid map path')
+    sys.exit(0)
 options = []
 
 if len(sys.argv) > 2:
@@ -23,8 +29,10 @@ if len(sys.argv) > 2:
             print('drawing from source')
             simulation = SimulationDrawer(floor_map)
             simulation.draw_from_file(source_path)
+            sys.exit(0)
         else:
             print('specify path to source file')
+            sys.exit(0)
     if option in ['--headless']:
         options.append(option)
 

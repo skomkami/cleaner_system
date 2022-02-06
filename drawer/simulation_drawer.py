@@ -1,5 +1,6 @@
 import pygame
 import json
+import sys
 
 from drawer.draw_floor import draw_floor
 from drawer.legend_drawer import LegendDrawer
@@ -47,7 +48,8 @@ class SimulationDrawer:
             with open(filepath, 'r', encoding='utf-8') as f:
                 save = json.load(f)
         except Exception:
-            pass
+            print('pass valid path')
+            sys.exit(0)
         save = save['steps']
         for step in save:
             self.draw_frame(step)
