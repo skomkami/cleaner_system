@@ -4,6 +4,7 @@ import json
 import sys
 import time
 import math
+import os
 
 import model.model
 from model.model import Floor, RoomSimulation, RoomType, Cleaner
@@ -184,6 +185,8 @@ class Simulation:
             except KeyboardInterrupt:
                 output = dict()
                 output['steps'] = simulation_save
-                with open('output.json', 'w+') as outfile:
+                if not os.path.exists('cleaners_output'):
+                    os.makedirs('cleaners_output')
+                with open('cleaners_output/output.json', 'w+') as outfile:
                     json.dump(output, outfile)
                 sys.exit(0)
