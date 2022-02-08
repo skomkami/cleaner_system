@@ -114,6 +114,7 @@ ENV/
 env.bak/
 venv.bak/
 active-firewall/
+myvenv/
 
 # Pycharm .idea directory
 .idea/

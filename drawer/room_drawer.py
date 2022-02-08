@@ -20,7 +20,7 @@ class RoomDrawer(Drawer):
         self.border = border_width
         self.block_w = self.area.width / blocks_x
         self.block_h = self.area.height / blocks_y
-        self.font = ft.SysFont("Comic Sans MS", 24)
+        self.font = ft.SysFont(pygame.font.get_fonts()[0], 24)
 
     def draw_room(self, r: Room):
         room_color = pygame.Color(get_color_for_room(r.room_type))

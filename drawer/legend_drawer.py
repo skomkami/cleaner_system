@@ -1,5 +1,7 @@
 from drawer.drawer import Drawer
 import pygame
+import pygame.freetype as ft
+
 from drawer.rectangle import Rectangle
 from drawer.color import *
 
@@ -7,8 +9,8 @@ from drawer.color import *
 class LegendDrawer(Drawer):
     def __init__(self, pygame_screen: pygame.Surface, drawing_area: Rectangle):
         super().__init__(pygame_screen, drawing_area)
-        self.big_font = pygame.freetype.SysFont("Comic Sans MS", 32)
-        self.reg_font = pygame.freetype.SysFont("Comic Sans MS", 18)
+        self.big_font = ft.SysFont(pygame.font.get_fonts()[0], 32)
+        self.reg_font = ft.SysFont(pygame.font.get_fonts()[0], 18)
 
     def draw(self):
         self.draw_text(self.big_font, 30, 30, text="Legend", color=white)
