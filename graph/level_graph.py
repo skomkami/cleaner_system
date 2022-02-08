@@ -37,7 +37,7 @@ class LevelGraph(pgv.AGraph):
                                          # xlabel="",
                                          penwidth='3',
                                          width=r.width/max_r_surface,
-                                         height=r.height/max_r_surface,
+                                         height=r.length / max_r_surface,
                                          fillcolor=color,
                                          pos=pos
                                          )

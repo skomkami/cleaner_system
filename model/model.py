@@ -25,18 +25,18 @@ class Room:
     pos_x: int
     pos_y: int
     width: int
-    height: int
+    length: int
     room_center_x = 0
     room_center_y = 0
 
     def surface(self):
-        return self.width * self.height
+        return self.width * self.length
 
     def end_x(self):
         return self.pos_x+self.width
 
     def end_y(self):
-        return self.pos_y+self.height
+        return self.pos_y+self.length
 
 @dataclass
 class RoomSimulation:
