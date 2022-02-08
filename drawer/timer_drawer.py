@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 import pygame
+import pygame.freetype as ft
+
 from drawer.color import *
 from drawer.drawer import Drawer
 from drawer.rectangle import Rectangle
@@ -8,8 +10,8 @@ from drawer.rectangle import Rectangle
 class TimerDrawer(Drawer):
     def __init__(self, pygame_screen: pygame.Surface, drawing_area: Rectangle):
         super().__init__(pygame_screen, drawing_area)
-        self.big_font = pygame.freetype.SysFont("Comic Sans MS", 32)
-        self.reg_font = pygame.freetype.SysFont("Comic Sans MS", 24)
+        self.big_font = ft.SysFont("Comic Sans MS", 32)
+        self.reg_font = ft.SysFont("Comic Sans MS", 24)
         self.date = datetime.today()
 
     def tick_and_draw(self):
