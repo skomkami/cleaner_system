@@ -1,4 +1,5 @@
 import pygame
+import pygame.freetype as ft
 from drawer.rectangle import Rectangle
 from drawer.drawer import Drawer
 from model.model import Room
@@ -19,7 +20,7 @@ class RoomDrawer(Drawer):
         self.border = border_width
         self.block_w = self.area.width / blocks_x
         self.block_h = self.area.height / blocks_y
-        self.font = pygame.freetype.SysFont("Comic Sans MS", 24)
+        self.font = ft.SysFont("Comic Sans MS", 24)
 
     def draw_room(self, r: Room):
         room_color = pygame.Color(get_color_for_room(r.room_type))
